@@ -1,0 +1,62 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="DODTM.MainPage">
+
+    <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto, Auto"
+        ColumnDefinitions="*, *, *, *, *"
+        Padding="10">
+
+        <Image Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="6"
+            x:Name="imageProcess"
+            Source="large_514931.jpg"
+            SemanticProperties.Description="Cute dot net bot waving hi to you!"/>
+
+        <Button Grid.Row="0" Grid.Column="4" Margin="5"
+            x:Name="openImgBtn"
+            Text="Open image"
+            SemanticProperties.Hint="Select an image"
+            Clicked="SelectedPathClicked" MinimumHeightRequest="40" MaximumHeightRequest="50"/>
+
+        <Picker x:Name="algorithmPicker" Title="Algorithm" Grid.Row="1" Grid.Column="4" Margin="5" MinimumHeightRequest="40" MaximumHeightRequest="80" SelectedIndexChanged="PickerSelectedIndexChanged">
+            <Picker.Items>
+                <x:String>DFT</x:String>
+                <x:String>SVD</x:String>
+                <x:String>PLaHPF</x:String>
+                <x:String>ButterworthF</x:String>
+                <x:String>SDIFULaplaceF</x:String>
+                <x:String>FDFGaussianF</x:String>
+                <x:String>FDFLaplaceF</x:String>
+                <x:String>Barcode</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <Entry Grid.Row="2" Grid.Column="4" Margin="5"
+               x:Name="argEntry1" Placeholder="Count of images" Text=""  MinimumHeightRequest="40" MaximumHeightRequest="50" Keyboard="Numeric"/>
+        <Entry Grid.Row="3" Grid.Column="4" Margin="5"
+            x:Name="argEntry2" Placeholder="Step" Text="" MinimumHeightRequest="40" MaximumHeightRequest="50" Keyboard="Numeric"/>
+
+        <StackLayout Grid.Row="4" Grid.Column="4" >
+            <Switch x:Name="switcher" IsToggled="True" Toggled="Switcher_Toggled" />
+            <Label x:Name="label" Text="Mask on" FontSize="16" MinimumHeightRequest="40" MaximumHeightRequest="50" />
+        </StackLayout>
+
+        <Picker x:Name="saveAsPicker" Title="Output files" Grid.Row="5" Grid.Column="4" Margin="5" MinimumHeightRequest="40" MaximumHeightRequest="80" SelectedIndexChanged="PickerSelectedIndexChanged">
+            <Picker.Items>
+                <x:String>png</x:String>
+                <x:String>jpeg</x:String>
+                <x:String>bmp</x:String>
+                <x:String>jpg</x:String>
+            </Picker.Items>
+        </Picker>
+
+        <Button Grid.Row="6" Grid.Column="4" Margin="5"
+            x:Name="processBtn"
+            Text="Process"
+            SemanticProperties.Hint="Process the image"
+            Clicked="ProcessClicked" MinimumHeightRequest="40" MaximumHeightRequest="50"/>
+
+    </Grid>
+
+</ContentPage>
+
