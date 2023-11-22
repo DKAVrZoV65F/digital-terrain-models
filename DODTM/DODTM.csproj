@@ -66,11 +66,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="BarcodeNet" Version="0.0.2" />
-		<PackageReference Include="BarcodeNet.ImageSharp" Version="0.0.2" />
-		<PackageReference Include="BarcodeNet.runtime.windows" Version="1.0.2-alpha.7" />
+		<!-- <PackageReference Include="BarcodeNet" Version="0.0.2" /> -->
+		<!-- <PackageReference Include="BarcodeNet.ImageSharp" Version="0.0.2" /> -->
+		<!-- <PackageReference Include="BarcodeNet.runtime.windows" Version="1.0.2-alpha.7" /> -->
 		<PackageReference Include="CommunityToolkit.Maui" Version="7.0.0" />
-		<PackageReference Include="GerFern.MathOperations" Version="0.0.1" />
+		<!-- <PackageReference Include="GerFern.MathOperations" Version="0.0.1" /> -->
 		<PackageReference Include="Microsoft.Maui.Controls" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="$(MauiVersion)" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />

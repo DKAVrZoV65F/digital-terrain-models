@@ -37,6 +37,13 @@ namespace DODTM
 
         private async void SelectedPathClicked(object sender, EventArgs e)
         {
+            #if MACCATALYST
+            string pathLocal = openImgEntry.Text;
+            if(!string.IsNullOrEmpty(pathLocal)) {
+                path = pathLocal;
+                imageProcess.Source = path;
+            }
+            #elif WINDOWS
             var filePath = await FilePicker.PickAsync(default);
             if (!string.IsNullOrEmpty(filePath?.ToString()))
             {
@@ -44,8 +51,8 @@ namespace DODTM
                 imageProcess.Source = path;
             }
             return;
+            #endif
         }
-
 
         private void AlgorithmListChanged(object sender, SelectedItemChangedEventArgs e)
         {
@@ -68,48 +75,46 @@ namespace DODTM
             bool mask = switcher.IsChecked;
             string arg1 = (mask && selectedAlg.Equals("DFT")) ? "True" : (!mask && selectedAlg.Equals("DFT")) ? "" : argEntry1.Text;
             string arg2 = argEntry2.Text;
-
-            #if MACCATALYST
-            // MacCatalyst
-            string pathLocal = openImgEntry.Text;
-            if(!string.IsNullOrEmpty(pathLocal)) {
-                path = pathLocal;
-                imageProcess.Source = path;
-                //imageProcess.Source = ImageSource.FromFile("/Users/kamchatka/dotnet_bot.png");
+            
+            if (string.IsNullOrEmpty(path))
+            {
+                await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
+                return;
             }
+
+            if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
+            
+            string pathFolder = "";
+            #if MACCATALYST
+            pathFolder = "/Users/kamchatka/";
+            #elif WINDOWS
+            var pathFolderLoc = await FolderPicker.PickAsync(default);
+
+            if (string.IsNullOrEmpty(pathFolderLoc.Folder?.Path))
+            {
+                await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
+                return;
+            }
+            pathFolder = pathFolder.Folder.Path;
             #endif
-            // if (string.IsNullOrEmpty(path))
-            // {
-            //     await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
-            //     return;
-            // }
-
-            // if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
-            // var pathFolder = await FolderPicker.PickAsync(default);
-
-            // if (string.IsNullOrEmpty(pathFolder.Folder?.Path))
-            // {
-            //     await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
-            //     return;
-            // }
-            // string ext = Path.GetExtension(path).Replace(".", "");
-            // foreach (var type in typeFiles)
-            // {
-            //     if (ext.Equals(type))
-            //     {
-            //         Directory.CreateDirectory(pathFolder.Folder.Path + $"\\{selectedAlg}");
-
-            //         if (selectedAlg.Equals("DFT"))
-            //         {
-            //             int arg = Int32.Parse(arg1);
-            //             ExecuteBarcode(path, arg, pathFolder.Folder.Path + $"\\{selectedAlg}", outputFile: (string)saveList.SelectedItem);
-            //         }
-            //         else ExecuteImage(selectedAlg, path, pathFolder.Folder.Path + $"\\{selectedAlg}", arg1, arg2);
-            //         await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder.Folder.Path + $"\\{selectedAlg}"}", "ОK");
-            //         return;
-            //     }
-            // }
-            // await DisplayAlert("Image processing", "The file does not contain the required extension", "ОK");
+            
+            string ext = Path.GetExtension(path).Replace(".", "");
+            foreach (var type in typeFiles)
+            {
+                if (ext.Equals(type))
+                {
+                    Directory.CreateDirectory(pathFolder + $"{selectedAlg}");
+                    if (selectedAlg.Equals("DFT"))
+                    {
+                        int arg = Int32.Parse(arg1);
+                        ExecuteBarcode(path, arg, pathFolder + $"\\{selectedAlg}", outputFile: (string)saveList.SelectedItem);
+                    }
+                    else ExecuteImage(selectedAlg, path, pathFolder + $"\\{selectedAlg}", arg1, arg2);
+                    await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder + $"\\{selectedAlg}"}", "ОK");
+                    return;
+                }
+            }
+            await DisplayAlert("Image processing", "The file does not contain the required extension", "ОK");
         }
 
         [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]

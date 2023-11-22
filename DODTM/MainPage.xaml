@@ -30,6 +30,7 @@
             Grid.ColumnSpan="2"
             Margin="5"
             Text=""
+            TextChanged="SelectedPathClicked"
             Placeholder="Enter path to image"
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
