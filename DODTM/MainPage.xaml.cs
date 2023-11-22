@@ -1,8 +1,8 @@
-﻿using BarcodeNet.ImageSharp;
-using BarcodeNet.Managment;
+﻿// using BarcodeNet.ImageSharp;
+// using BarcodeNet.Managment;
 using CommunityToolkit.Maui.Storage;
-using SixLabors.ImageSharp;
-using SixLabors.ImageSharp.PixelFormats;
+// using SixLabors.ImageSharp;
+// using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DODTM
@@ -25,6 +25,14 @@ namespace DODTM
             switcher.IsVisible = false;
             argEntry1.IsVisible = false;
             argEntry2.IsVisible = false;
+
+            #if WINDOWS
+            openImgBtn.IsVisible = true;
+            openImgEntry.IsVisible = false;
+            #elif MACCATALYST
+            openImgBtn.IsVisible = false;
+            openImgEntry.IsVisible = true;
+            #endif
         }
 
         private async void SelectedPathClicked(object sender, EventArgs e)
@@ -61,38 +69,47 @@ namespace DODTM
             string arg1 = (mask && selectedAlg.Equals("DFT")) ? "True" : (!mask && selectedAlg.Equals("DFT")) ? "" : argEntry1.Text;
             string arg2 = argEntry2.Text;
 
-            if (string.IsNullOrEmpty(path))
-            {
-                await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
-                return;
+            #if MACCATALYST
+            // MacCatalyst
+            string pathLocal = openImgEntry.Text;
+            if(!string.IsNullOrEmpty(pathLocal)) {
+                path = pathLocal;
+                imageProcess.Source = path;
+                //imageProcess.Source = ImageSource.FromFile("/Users/kamchatka/dotnet_bot.png");
             }
+            #endif
+            // if (string.IsNullOrEmpty(path))
+            // {
+            //     await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
+            //     return;
+            // }
 
-            if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
-            var pathFolder = await FolderPicker.PickAsync(default);
+            // if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
+            // var pathFolder = await FolderPicker.PickAsync(default);
 
-            if (string.IsNullOrEmpty(pathFolder.Folder?.Path))
-            {
-                await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
-                return;
-            }
-            string ext = Path.GetExtension(path).Replace(".", "");
-            foreach (var type in typeFiles)
-            {
-                if (ext.Equals(type))
-                {
-                    Directory.CreateDirectory(pathFolder.Folder.Path + $"\\{selectedAlg}");
+            // if (string.IsNullOrEmpty(pathFolder.Folder?.Path))
+            // {
+            //     await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
+            //     return;
+            // }
+            // string ext = Path.GetExtension(path).Replace(".", "");
+            // foreach (var type in typeFiles)
+            // {
+            //     if (ext.Equals(type))
+            //     {
+            //         Directory.CreateDirectory(pathFolder.Folder.Path + $"\\{selectedAlg}");
 
-                    if (selectedAlg.Equals("DFT"))
-                    {
-                        int arg = Int32.Parse(arg1);
-                        ExecuteBarcode(path, arg, pathFolder.Folder.Path + $"\\{selectedAlg}", outputFile: (string)saveList.SelectedItem);
-                    }
-                    else ExecuteImage(selectedAlg, path, pathFolder.Folder.Path + $"\\{selectedAlg}", arg1, arg2);
-                    await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder.Folder.Path + $"\\{selectedAlg}"}", "ОK");
-                    return;
-                }
-            }
-            await DisplayAlert("Image processing", "The file does not contain the required extension", "ОK");
+            //         if (selectedAlg.Equals("DFT"))
+            //         {
+            //             int arg = Int32.Parse(arg1);
+            //             ExecuteBarcode(path, arg, pathFolder.Folder.Path + $"\\{selectedAlg}", outputFile: (string)saveList.SelectedItem);
+            //         }
+            //         else ExecuteImage(selectedAlg, path, pathFolder.Folder.Path + $"\\{selectedAlg}", arg1, arg2);
+            //         await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder.Folder.Path + $"\\{selectedAlg}"}", "ОK");
+            //         return;
+            //     }
+            // }
+            // await DisplayAlert("Image processing", "The file does not contain the required extension", "ОK");
         }
 
         [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
@@ -125,22 +142,22 @@ namespace DODTM
 
         private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile = "png")
         {
-            ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
-            int width = container.Width;
-            int height = container.Height;
-            BarCodeLineContainer<byte> barcodeContainer = container.GetBarCode<byte>();
+        //     ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
+        //     int width = container.Width;
+        //     int height = container.Height;
+        //     BarCodeLineContainer<byte> barcodeContainer = container.GetBarCode<byte>();
 
-            Image<L8> img = barcodeContainer.BarCodes
-                .Where(x => x.Barcode.Length == length)
-                .Select(a => a.Barcode)
-                .ToImageL8(width, height, false);
-            img.Save($"{pathToSave}\\Equals_{length}.{outputFile}");
+        //     Image<L8> img = barcodeContainer.BarCodes
+        //         .Where(x => x.Barcode.Length == length)
+        //         .Select(a => a.Barcode)
+        //         .ToImageL8(width, height, false);
+        //     img.Save($"{pathToSave}\\Equals_{length}.{outputFile}");
 
-            Image<L8> img1 = barcodeContainer.BarCodes
-                .Where(x => x.Barcode.Length != length)
-                .Select(a => a.Barcode)
-                .ToImageL8(width, height, false);
-            img1.Save($"{pathToSave}\\Another_{length}.{outputFile}");
+        //     Image<L8> img1 = barcodeContainer.BarCodes
+        //         .Where(x => x.Barcode.Length != length)
+        //         .Select(a => a.Barcode)
+        //         .ToImageL8(width, height, false);
+        //     img1.Save($"{pathToSave}\\Another_{length}.{outputFile}");
         }
     }
 }
