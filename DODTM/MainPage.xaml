@@ -4,58 +4,86 @@
              x:Class="DODTM.MainPage">
 
     <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto, Auto"
-        ColumnDefinitions="*, *, *, *, *"
+        ColumnDefinitions="*, *, *, *, *, *"
         Padding="10">
 
-        <Image Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" Grid.RowSpan="6"
-            x:Name="imageProcess"
-            Source="large_514931.jpg"
-            SemanticProperties.Description="Cute dot net bot waving hi to you!"/>
+        <Image x:Name="imageProcess"
+            Grid.Row="0" 
+            Grid.Column="0" 
+            Grid.ColumnSpan="4" 
+            Grid.RowSpan="6"
+            Source="large_514931.jpg" />
 
-        <Button Grid.Row="0" Grid.Column="4" Margin="5"
-            x:Name="openImgBtn"
+        <Button x:Name="openImgBtn"
+            Grid.Row="0" 
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Margin="5"
             Text="Open image"
-            SemanticProperties.Hint="Select an image"
-            Clicked="SelectedPathClicked" MinimumHeightRequest="40" MaximumHeightRequest="50"/>
+            Clicked="SelectedPathClicked" 
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
 
-        <Picker x:Name="algorithmPicker" Title="Algorithm" Grid.Row="1" Grid.Column="4" Margin="5" MinimumHeightRequest="40" MaximumHeightRequest="80" SelectedIndexChanged="PickerSelectedIndexChanged">
-            <Picker.Items>
-                <x:String>DFT</x:String>
-                <x:String>SVD</x:String>
-                <x:String>PLaHPF</x:String>
-                <x:String>ButterworthF</x:String>
-                <x:String>SDIFULaplaceF</x:String>
-                <x:String>FDFGaussianF</x:String>
-                <x:String>FDFLaplaceF</x:String>
-                <x:String>Barcode</x:String>
-            </Picker.Items>
-        </Picker>
+        <ListView x:Name="algorithmList" 
+            Grid.Row="2"
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Margin="5"
+            ItemSelected="AlgorithmListChanged" 
+            MinimumHeightRequest="50" 
+            MaximumHeightRequest="250" />
 
-        <Entry Grid.Row="2" Grid.Column="4" Margin="5"
-               x:Name="argEntry1" Placeholder="Count of images" Text=""  MinimumHeightRequest="40" MaximumHeightRequest="50" Keyboard="Numeric"/>
-        <Entry Grid.Row="3" Grid.Column="4" Margin="5"
-            x:Name="argEntry2" Placeholder="Step" Text="" MinimumHeightRequest="40" MaximumHeightRequest="50" Keyboard="Numeric"/>
+        <Entry x:Name="argEntry1" 
+            Grid.Row="3" 
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Margin="5"
+            Text=""
+            Placeholder="Count of images" 
+            Keyboard="Numeric"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
 
-        <StackLayout Grid.Row="4" Grid.Column="4" >
-            <Switch x:Name="switcher" IsToggled="True" Toggled="Switcher_Toggled" />
-            <Label x:Name="label" Text="Mask on" FontSize="16" MinimumHeightRequest="40" MaximumHeightRequest="50" />
-        </StackLayout>
+        <Entry x:Name="argEntry2"
+            Grid.Row="4"
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Margin="5"
+            Text=""
+            Placeholder="Step"
+            Keyboard="Numeric"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
 
-        <Picker x:Name="saveAsPicker" Title="Output files" Grid.Row="5" Grid.Column="4" Margin="5" MinimumHeightRequest="40" MaximumHeightRequest="80" SelectedIndexChanged="PickerSelectedIndexChanged">
-            <Picker.Items>
-                <x:String>png</x:String>
-                <x:String>jpeg</x:String>
-                <x:String>bmp</x:String>
-                <x:String>jpg</x:String>
-            </Picker.Items>
-        </Picker>
+        <CheckBox x:Name="switcher" 
+            Grid.Row="3" 
+            Grid.Column="4" 
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
+        
+        <Label x:Name="label" 
+            Grid.Row="3" 
+            Grid.Column="5"
+            FontSize="24" 
+            Text="Apply a mask?"  
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
 
-        <Button Grid.Row="6" Grid.Column="4" Margin="5"
-            x:Name="processBtn"
+        <ListView x:Name="saveList"
+            Grid.Row="5" 
+            Grid.Column="4" 
+            Margin="5"
+            ItemSelected="SaveListChanged"
+            MinimumHeightRequest="90" 
+            MaximumHeightRequest="150" />
+
+        <Button x:Name="processBtn"
+            Grid.Row="7" 
+            Grid.Column="6"
             Text="Process"
-            SemanticProperties.Hint="Process the image"
-            Clicked="ProcessClicked" MinimumHeightRequest="40" MaximumHeightRequest="50"/>
-
+            Clicked="ProcessClicked" 
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
     </Grid>
 
 </ContentPage>

@@ -10,41 +10,55 @@ namespace DODTM
     public partial class MainPage : ContentPage
     {
         readonly string[] typeFiles = ["png", "jpeg", "bmp", "jpg"];
+        readonly string[] algorithms = ["DFT", "SVD", "PLaHPF", "ButterworthF", "SDIFULaplaceF", "FDFGaussianF", "FDFLaplaceF", "Barcode"];
         string path = "";
+        string? selectedAlg = "";
+        string? selectedOutput = "";
 
         public MainPage()
         {
             InitializeComponent();
-            algorithmPicker.SelectedIndex = 0;
-            saveAsPicker.SelectedIndex = 0;
+            algorithmList.ItemsSource = algorithms;
+            saveList.ItemsSource = typeFiles;
+
+            label.IsVisible = false;
+            switcher.IsVisible = false;
+            argEntry1.IsVisible = false;
+            argEntry2.IsVisible = false;
         }
 
         private async void SelectedPathClicked(object sender, EventArgs e)
         {
             var filePath = await FilePicker.PickAsync(default);
-            if (string.IsNullOrEmpty(filePath?.ToString()))
+            if (!string.IsNullOrEmpty(filePath?.ToString()))
             {
-                await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
-                return;
+                path = filePath.FullPath;
+                imageProcess.Source = path;
             }
-            path = filePath.FullPath;
-            imageProcess.Source = path;
+            return;
         }
 
-        private void Switcher_Toggled(object sender, ToggledEventArgs e) => label.Text = (e.Value) ? $"Mask on" : "Mask off";
 
-        private void PickerSelectedIndexChanged(object sender, EventArgs e)
+        private void AlgorithmListChanged(object sender, SelectedItemChangedEventArgs e)
         {
-            label.IsVisible = algorithmPicker.SelectedIndex == 0;
-            switcher.IsVisible = algorithmPicker.SelectedIndex == 0;
-            argEntry1.IsVisible = algorithmPicker.SelectedIndex == 1 || algorithmPicker.SelectedIndex == 7;
-            argEntry2.IsVisible = algorithmPicker.SelectedIndex == 1;
+            selectedAlg = e.SelectedItem.ToString();
+            if (selectedAlg == null) return;
+
+            label.IsVisible = selectedAlg.Equals("DFT");
+            switcher.IsVisible = selectedAlg.Equals("DFT");
+            argEntry1.IsVisible = selectedAlg.Equals("SVD") || selectedAlg.Equals("Barcode");
+            argEntry2.IsVisible = selectedAlg.Equals("SVD");
         }
+        
+        private void SaveListChanged(object sender, SelectedItemChangedEventArgs e) => selectedOutput = e.SelectedItem.ToString();
 
         [RequiresAssemblyFiles("Calls MauiCurs.MainPage.executeImage(String, String)")]
         private async void ProcessClicked(object sender, EventArgs e)
         {
-            string arg1 = (label.Text.Contains("True") && algorithmPicker.SelectedIndex == 0) ? "True" : (label.Text.Contains("False") && algorithmPicker.SelectedIndex == 0) ? "" : argEntry1.Text;
+            if (selectedAlg == null) return;
+
+            bool mask = switcher.IsChecked;
+            string arg1 = (mask && selectedAlg.Equals("DFT")) ? "True" : (!mask && selectedAlg.Equals("DFT")) ? "" : argEntry1.Text;
             string arg2 = argEntry2.Text;
 
             if (string.IsNullOrEmpty(path))
@@ -53,9 +67,7 @@ namespace DODTM
                 return;
             }
 
-            if (algorithmPicker.SelectedIndex == 1 && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
-
-            await DisplayAlert("Image processing", "Select folder to save files", "ОK");
+            if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
             var pathFolder = await FolderPicker.PickAsync(default);
 
             if (string.IsNullOrEmpty(pathFolder.Folder?.Path))
@@ -63,21 +75,20 @@ namespace DODTM
                 await DisplayAlert("Image processing", "The path to the file is not specified!", "ОK");
                 return;
             }
-            int algorithmIndex = algorithmPicker.SelectedIndex;
             string ext = Path.GetExtension(path).Replace(".", "");
             foreach (var type in typeFiles)
             {
                 if (ext.Equals(type))
                 {
-                    Directory.CreateDirectory(pathFolder.Folder.Path + $"\\{algorithmPicker.SelectedItem}");
+                    Directory.CreateDirectory(pathFolder.Folder.Path + $"\\{selectedAlg}");
 
-                    if (algorithmIndex == 7)
+                    if (selectedAlg.Equals("DFT"))
                     {
                         int arg = Int32.Parse(arg1);
-                        ExecuteBarcode(path, arg, pathFolder.Folder.Path + $"\\{algorithmPicker.SelectedItem}", outputFile: saveAsPicker.SelectedItem.ToString());
+                        ExecuteBarcode(path, arg, pathFolder.Folder.Path + $"\\{selectedAlg}", outputFile: (string)saveList.SelectedItem);
                     }
-                    else ExecuteImage(algorithmIndex, path, pathFolder.Folder.Path + $"\\{algorithmPicker.SelectedItem}", arg1, arg2);
-                    await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder.Folder.Path + $"\\{algorithmPicker.SelectedItem}"}", "ОK");
+                    else ExecuteImage(selectedAlg, path, pathFolder.Folder.Path + $"\\{selectedAlg}", arg1, arg2);
+                    await DisplayAlert("Image processing", $"Completed successfully and save in {pathFolder.Folder.Path + $"\\{selectedAlg}"}", "ОK");
                     return;
                 }
             }
@@ -85,21 +96,20 @@ namespace DODTM
         }
 
         [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
-        private async void ExecuteImage(int algorithmIndex, string pathImage, string folderPath, string arg1, string arg2)
+        private void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string arg1, string arg2)
         {
-
             string pythonPath = "C:\\Users\\" + Environment.UserName + "\\PROG\\";
-            pythonPath += algorithmIndex switch
+            pythonPath += algorithmSelect switch
             {
-                1 => "SVD.exe",
-                2 => "PLaHPF.exe",
-                3 => "ButterworthF.exe",
-                4 => "SDIFULaplaceF.exe",
-                5 => "FDFGaussianF.exe",
-                6 => "FDFLaplaceF.exe",
+                "SVD" => "SVD.exe",
+                "PLaHPF" => "PLaHPF.exe",
+                "ButterworthF" => "ButterworthF.exe",
+                "SDIFULaplaceF" => "SDIFULaplaceF.exe",
+                "FDFGaussianF" => "FDFGaussianF.exe",
+                "FDFLaplaceF" => "FDFLaplaceF.exe",
                 _ => "DFT.exe",
             };
-            System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{pathImage}\" \"{folderPath}\" \"{saveAsPicker.SelectedItem}\" \"{arg1}\" \"{arg2}\"")
+            System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{pathImage}\" \"{folderPath}\" \"{saveList.SelectedItem}\" \"{arg1}\" \"{arg2}\"")
             {
                 RedirectStandardOutput = true,
                 UseShellExecute = false,
@@ -111,8 +121,6 @@ namespace DODTM
             };
             proc.Start();
             _ = proc.StandardOutput.ReadToEnd();
-
-            await DisplayAlert("Image processing", "Process complete successfully", "ОK");
         }
 
         private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile = "png")
