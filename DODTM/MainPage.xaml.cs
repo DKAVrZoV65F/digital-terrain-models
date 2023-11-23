@@ -3,7 +3,6 @@ using BarcodeNet.Managment;
 using CommunityToolkit.Maui.Storage;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
-using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 
 namespace DODTM;
@@ -131,20 +130,9 @@ public partial class MainPage : ContentPage
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
     private void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string outputFile, string arg1 = "0", string arg2 = "0", int widthImg = 800, int heightImg = 800)
     {
-        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\PROG\\DODTMAlgorithms.exe";
+        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\PROG\\DODTM_Algorithms.exe";
 
         int dpiImg = (!string.IsNullOrEmpty(dpiImgEntry.Text)) ? Int32.Parse(widthImgEntry.Text) : 100;
-
-        pythonPath += algorithmSelect switch
-        {
-            "SVD" => "SVD.exe",
-            "Perfect low and high pass filter" => "PLaHPF.exe",
-            "Butterworth Filter" => "ButterworthF.exe",
-            "Laplace filter" => "SDIFULaplaceF.exe",
-            "Gaussian filter" => "FDFGaussianF.exe",
-            "Frequency Domain Filter Laplace Filter" => "FDFLaplaceF.exe",
-            _ => "DFT.exe",
-        };
 
         System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
         {

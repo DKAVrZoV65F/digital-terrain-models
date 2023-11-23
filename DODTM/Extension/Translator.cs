@@ -9,3 +9,31 @@ public class Translator
     public CultureInfo? CultureInfo { get; set; }
     public static Translator Instance { get; set; } = new Translator();
 }
+
+/*
+                   ``
+  `.              `ys
+  +h+             +yh-
+  yyh:           .hyys
+ .hyyh.          oyyyh`
+ /yyyyy`        .hyydy/
+ syyhhy+        oyyhsys
+ hyyyoyh.      .hyyy:hh`
+.hyyyy:ho      +yyys-yh-
+:hyyyh-oh.    `hyyyo-oy/
+/yyyyh-:h+    -hyyh/-oy+
++yyyyh:-yy    +yyyh--oyo
++yyyyh/-sh.   syyyh--oyo
++yyyyh/-oy/  `hyyyy--syo
++yyyyh/-+y+  `hyyys--yy+
+:yyyyh/-+ys  .hyyyo-:hy:
+.hyyyh+-+ys  .hyyyo-oyh`
+`yyyyyo-oyy  .hyyy+-yyy
+ +yyyys-syy  `hyyh/oyy/
+ .hyyyh-hyy  `hyyh/hyh
+  oyyyhshys   yyyhyyy+
+  oyyyhshys   yyyhyyy+
+   /hyyyyyo`.-oyyyyh/
+   `syyyyyyyhyyyyyyho.
+    .hyyyyhNdyyyyyyymh/`
+*/
