@@ -45,6 +45,7 @@
 		<GenerateTestArtifacts>True</GenerateTestArtifacts>
 		<AppInstallerUri>C:\</AppInstallerUri>
 		<HoursBetweenUpdateChecks>0</HoursBetweenUpdateChecks>
+		<RestoreSources>$(RestoreSources);../DODTM/Extension/Barcode;https://api.nuget.org/v3/index.json</RestoreSources>
 	</PropertyGroup>
 
 	<ItemGroup>

@@ -10,7 +10,8 @@ namespace DODTM;
 public partial class MainPage : ContentPage
 {
     readonly string[] typeFiles = ["png", "jpeg", "bmp", "jpg"];
-    readonly string[] algorithms = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Barcode"];
+    readonly string[] algorithmsDefault = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Barcode"];
+    readonly string[] algorithmsForMac = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter"];
     string path = "";
     string? selectedAlg = "";
     string? selectedOutput = "";
@@ -19,9 +20,7 @@ public partial class MainPage : ContentPage
     public MainPage()
     {
         InitializeComponent();
-        algorithmList.ItemsSource = algorithms;
         saveList.ItemsSource = typeFiles;
-
         label.IsVisible = false;
         switcher.IsVisible = false;
         argEntry1.IsVisible = false;
@@ -30,10 +29,11 @@ public partial class MainPage : ContentPage
 #if MACCATALYST
         openImgBtn.IsVisible = false;
         openImgEntry.IsVisible = true;
-
+        algorithmList.ItemsSource = algorithmsForMac;
 #elif WINDOWS
         openImgBtn.IsVisible = true;
         openImgEntry.IsVisible = false;
+        algorithmList.ItemsSource = algorithmsDefault;
 #endif
     }
 
@@ -89,7 +89,7 @@ public partial class MainPage : ContentPage
         string pathFolder = "";
 
 #if MACCATALYST
-        pathFolder = "/Users/kamchatka/";
+        pathFolder = "~";
 #elif WINDOWS
         var pathFolderLoc = await FolderPicker.PickAsync(default);
 
@@ -100,6 +100,7 @@ public partial class MainPage : ContentPage
         }
         pathFolder = pathFolderLoc.Folder.Path + "\\";
 #endif
+        
         string ext = Path.GetExtension(path).Replace(".", "");
         foreach (var type in typeFiles)
         {
@@ -110,7 +111,15 @@ public partial class MainPage : ContentPage
 
                 string outputFileImage = (string)saveList.SelectedItem ?? "png";
 #if MACCATALYST
-                Directory.CreateDirectory("/Users/kamchatka/" + $"\\{selectedAlg}");
+try
+{
+    Directory.CreateDirectory("~" + $"\\{selectedAlg}");
+}
+catch (Exception except)
+{
+    await DisplayAlert(nameOfProject, except.Message, "ОK");
+}
+                //
 #elif WINDOWS
                 Directory.CreateDirectory(pathFolder + selectedAlg);
 #endif
@@ -148,21 +157,14 @@ public partial class MainPage : ContentPage
         _ = proc.StandardOutput.ReadToEnd();
     }
 
-    private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)
+    private void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)
     {
-#if MACCATALYST
-                
-#elif WINDOWS
-        pathToSave += "\\";
-#endif
         ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
         int width = container.Width;
         int height = container.Height;
 
         if (widthImg > width) width = widthImg;
         if (heightImg > height) height = heightImg;
-
-
         BarCodeLineContainer<byte> barcodeContainer = container.GetBarCode<byte>();
 
         Image<L8> img = barcodeContainer.BarCodes
@@ -177,7 +179,7 @@ public partial class MainPage : ContentPage
             .Select(a => a.Barcode)
             .ToImageL8(width, height, false);
         img1.Save($"{pathToSave}Another_{length}.{outputFile}");
-        img1.Dispose();
+        img1.Dispose();  
     }
 }
 
