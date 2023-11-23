@@ -1,6 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:extension="clr-namespace:DODTM.Extension"
+             xmlns:strings="clr-namespace:DODTM.Resources.Strings"
              x:Class="DODTM.MainPage">
 
     <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto, Auto"
@@ -19,7 +21,7 @@
             Grid.Column="4"
             Grid.ColumnSpan="2"
             Margin="5"
-            Text="Open image"
+            Text="{extension:Translate Key=OpenImage}"
             Clicked="SelectedPathClicked" 
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
@@ -31,7 +33,7 @@
             Margin="5"
             Text=""
             TextChanged="SelectedPathClicked"
-            Placeholder="Enter path to image"
+            Placeholder="{extension:Translate Key=OpenImage}"
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
 
@@ -50,7 +52,7 @@
             Grid.ColumnSpan="2"
             Margin="5"
             Text=""
-            Placeholder="Count of images" 
+            Placeholder="{extension:Translate Key=CountOfImages}" 
             Keyboard="Numeric"
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
@@ -61,7 +63,7 @@
             Grid.ColumnSpan="2"
             Margin="5"
             Text=""
-            Placeholder="Step"
+            Placeholder="{extension:Translate Key=Step}"
             Keyboard="Numeric"
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
@@ -75,23 +77,55 @@
         <Label x:Name="label" 
             Grid.Row="3" 
             Grid.Column="5"
-            FontSize="24" 
-            Text="Apply a mask?"  
+            FontSize="20" 
+            Text="{extension:Translate Key=ApplyAMask}"  
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
 
         <ListView x:Name="saveList"
             Grid.Row="5" 
             Grid.Column="4" 
+            Grid.ColumnSpan="2"
             Margin="5"
             ItemSelected="SaveListChanged"
             MinimumHeightRequest="90" 
             MaximumHeightRequest="150" />
 
+        <Entry x:Name="widthImgEntry"
+            Grid.Row="7"
+            Grid.Column="0"
+            Margin="5"
+            Text=""
+            Placeholder="{extension:Translate Key=imgWidth}"
+            Keyboard="Numeric"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
+
+        <Entry x:Name="heightImgEntry"
+            Grid.Row="7"
+            Grid.Column="1"
+            Margin="5"
+            Text=""
+            Placeholder="{extension:Translate Key=imgHeight}"
+            Keyboard="Numeric"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
+
+        <Entry x:Name="dpiImgEntry"
+            Grid.Row="7"
+            Grid.Column="2"
+            Margin="5"
+            Text=""
+            Placeholder="{extension:Translate Key=imgDPI}"
+            Keyboard="Numeric"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
+
         <Button x:Name="processBtn"
             Grid.Row="7" 
-            Grid.Column="6"
-            Text="Process"
+            Grid.Column="4"
+            Grid.ColumnSpan="2"
+            Text="{extension:Translate Key=Process}"
             Clicked="ProcessClicked" 
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
