@@ -26,7 +26,7 @@
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
 
-        <Button
+        <Button x:Name="infoButton"
             Grid.Row="0" 
             Grid.Column="6"
             Grid.ColumnSpan="1"
@@ -38,8 +38,8 @@
 
         <Entry x:Name="openImgEntry"
             Grid.Row="0" 
-            Grid.Column="5"
-            Grid.ColumnSpan="2"
+            Grid.Column="4"
+            Grid.ColumnSpan="3"
             Margin="5"
             Text=""
             TextChanged="SelectedPathClicked"

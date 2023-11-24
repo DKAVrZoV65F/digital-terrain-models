@@ -32,10 +32,9 @@ public partial class MainPage : ContentPage
 
 #if MACCATALYST
         openImgBtn.IsVisible = false;
-        openImgEntry.IsVisible = true;
+        infoButton.IsVisible = false;
         algorithmList.ItemsSource = algorithmsForMac;
 #elif WINDOWS
-        openImgBtn.IsVisible = true;
         openImgEntry.IsVisible = false;
         algorithmList.ItemsSource = algorithmsDefault;
 #endif
