@@ -1,9 +1,11 @@
 ﻿using BarcodeNet.ImageSharp;
 using BarcodeNet.Managment;
 using CommunityToolkit.Maui.Storage;
+using DODTM.Extension;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics.CodeAnalysis;
+using System.Globalization;
 
 namespace DODTM;
 
@@ -12,6 +14,8 @@ public partial class MainPage : ContentPage
     readonly string[] typeFiles = ["png", "jpeg", "bmp", "jpg"];
     readonly string[] algorithmsDefault = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Barcode"];
     readonly string[] algorithmsForMac = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter"];
+    string currentLanguage = "English";
+
     string path = "";
     string? selectedAlg = "";
     string? selectedOutput = "";
@@ -35,6 +39,25 @@ public partial class MainPage : ContentPage
         openImgEntry.IsVisible = false;
         algorithmList.ItemsSource = algorithmsDefault;
 #endif
+    }
+
+    private async void InfoClicked(object sender, EventArgs e)
+    {
+        string result = await DisplayActionSheet(Extension.Translator.Instance["AppInfo"].ToString(), Extension.Translator.Instance["Thanks"].ToString(), "GitHub", Extension.Translator.Instance["Version"].ToString() + " 2.1.0", Extension.Translator.Instance["Language"].ToString() + $"  {currentLanguage}", Extension.Translator.Instance["Author"].ToString());
+        if (result == null) return;
+        else if (result == "GitHub") await Clipboard.SetTextAsync("https://github.com/DKAVrZoV65F/Digital-Terrain-Models");
+        else if (result.Contains("English"))
+        {
+            Translator.Instance.CultureInfo = new CultureInfo("ru-RU");
+            Translator.Instance.OnPropertyChanged();
+            currentLanguage = "Русский";
+        }
+        else if (result.Contains("Русский"))
+        {
+            Translator.Instance.CultureInfo = new CultureInfo("en-US");
+            Translator.Instance.OnPropertyChanged();
+            currentLanguage = "English";
+        }
     }
 
     private async void SelectedPathClicked(object sender, EventArgs e)
@@ -72,7 +95,11 @@ public partial class MainPage : ContentPage
     [RequiresAssemblyFiles("Calls MauiCurs.MainPage.executeImage(String, String)")]
     private async void ProcessClicked(object sender, EventArgs e)
     {
-        if (selectedAlg == null) return;
+        if (selectedAlg == null || selectedAlg == "")
+        {
+            await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithAlgorithm"].ToString(), "ОK");
+            return;
+        }
 
         bool mask = switcher.IsChecked;
         string arg1 = selectedAlg.Equals("DFT") ? switcher.IsChecked.ToString() : arg1 = argEntry1.Text;
@@ -98,9 +125,9 @@ public partial class MainPage : ContentPage
             await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithPathFolder"].ToString(), "ОK");
             return;
         }
-        pathFolder = pathFolderLoc.Folder.Path + "\\";
+        pathFolder = pathFolderLoc.Folder.Path + "\\" + selectedAlg;
 #endif
-        
+
         string ext = Path.GetExtension(path).Replace(".", "");
         foreach (var type in typeFiles)
         {
@@ -121,15 +148,15 @@ catch (Exception except)
 }
                 //
 #elif WINDOWS
-                Directory.CreateDirectory(pathFolder + selectedAlg);
+                Directory.CreateDirectory(pathFolder);
 #endif
                 if (selectedAlg.Equals("Barcode"))
                 {
                     int arg = Int32.Parse(arg1);
-                    ExecuteBarcode(pathToImg: path, length: arg, pathToSave: pathFolder + selectedAlg, outputFile: outputFileImage, widthImg: width, heightImg: height);
+                    MainPage.ExecuteBarcode(pathToImg: path, length: arg, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
                 }
-                else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder + selectedAlg, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
-                await DisplayAlert(nameOfProject, (Extension.Translator.Instance["SuccessWork"].ToString() + $" {pathFolder + selectedAlg}"), "ОK");
+                else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
+                await DisplayAlert(nameOfProject, (Extension.Translator.Instance["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
                 return;
             }
         }
@@ -139,10 +166,9 @@ catch (Exception except)
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
     private void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string outputFile, string arg1 = "0", string arg2 = "0", int widthImg = 800, int heightImg = 800)
     {
-        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\PROG\\DODTM_Algorithms.exe";
+        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
 
         int dpiImg = (!string.IsNullOrEmpty(dpiImgEntry.Text)) ? Int32.Parse(widthImgEntry.Text) : 100;
-
         System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
         {
             RedirectStandardOutput = true,
@@ -157,7 +183,7 @@ catch (Exception except)
         _ = proc.StandardOutput.ReadToEnd();
     }
 
-    private void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)
+    private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)
     {
         ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
         int width = container.Width;
@@ -171,15 +197,15 @@ catch (Exception except)
             .Where(x => x.Barcode.Length == length)
             .Select(a => a.Barcode)
             .ToImageL8(width, height, false);
-        img.Save($"{pathToSave}Equals_{length}.{outputFile}");
+        img.Save($"{pathToSave}\\Equals_{length}.{outputFile}");
         img.Dispose();
 
         Image<L8> img1 = barcodeContainer.BarCodes
             .Where(x => x.Barcode.Length != length)
             .Select(a => a.Barcode)
             .ToImageL8(width, height, false);
-        img1.Save($"{pathToSave}Another_{length}.{outputFile}");
-        img1.Dispose();  
+        img1.Save($"{pathToSave}\\Another_{length}.{outputFile}");
+        img1.Dispose();
     }
 }
 

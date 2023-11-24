@@ -12,6 +12,7 @@ widthImg = int(sys.argv[5])
 heightImg = int(sys.argv[6])
 dpiImg = int(sys.argv[7])
 
+
 fig, ax = plt.subplots()
 fig.subplots_adjust(0, 0, 1, 1)
 plt.figure(figsize=(widthImg / dpiImg, heightImg / dpiImg), dpi=dpiImg)
@@ -22,7 +23,7 @@ if algorithm == "Butterworth Filter":
     Fshift = np.fft.fftshift(F)
     plt.imshow(np.log1p(np.abs(Fshift)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. Converting An Image To A Frequency.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. Converting An Image To A Frequency.{outputFile}', transparent=True)
     plt.close(fig)
 
     M, N = f.shape
@@ -35,7 +36,7 @@ if algorithm == "Butterworth Filter":
             H[u, v] = 1 / (1 + (D / D0) ** n)
     plt.imshow(H, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. Butterworth Low-Pass Filter.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. Butterworth Low-Pass Filter.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * H
@@ -43,7 +44,7 @@ if algorithm == "Butterworth Filter":
     g = np.abs(np.fft.ifft2(G))
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'3. Image Filters In The Frequency Domain.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/3. Image Filters In The Frequency Domain.{outputFile}', transparent=True)
     plt.close(fig)
 
     HPF = np.zeros((M, N), dtype=np.float32)
@@ -59,7 +60,7 @@ if algorithm == "Butterworth Filter":
             HPF[u, v] = 1 / (1 + (D0 / D) ** n)
     plt.imshow(HPF, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'4. Butterworth High-Pass Filter.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/4. Butterworth High-Pass Filter.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * HPF
@@ -67,7 +68,7 @@ if algorithm == "Butterworth Filter":
     g = np.abs(np.fft.ifft2(G))
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'5. Image Filters In The Frequency Domain.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/5. Image Filters In The Frequency Domain.{outputFile}', transparent=True)
     plt.close(fig)
 
 elif algorithm == "Gaussian filter":
@@ -75,19 +76,19 @@ elif algorithm == "Gaussian filter":
 
     plt.imshow(f, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. The Original Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. The Original Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     F = np.fft.fft2(f)
     Fshift = np.fft.fftshift(F)
     plt.imshow(np.log1p(np.abs(F)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. Convert The Image To Low-Pass part_1.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. Convert The Image To Low-Pass part_1.{outputFile}', transparent=True)
     plt.close(fig)
 
     plt.imshow(np.log1p(np.abs(Fshift)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'3. Convert The Image To Low-Pass part_2.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/3. Convert The Image To Low-Pass part_2.{outputFile}', transparent=True)
     plt.close(fig)
 
     M, N = f.shape
@@ -100,7 +101,7 @@ elif algorithm == "Gaussian filter":
 
     plt.imshow(H, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'4. Low-Pass Filter.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/4. Low-Pass Filter.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * H
@@ -109,23 +110,23 @@ elif algorithm == "Gaussian filter":
 
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'5. Low-frequency Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/5. Low-frequency Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     plt.imshow(np.log1p(np.abs(Gshift)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'6. Convert The Image To High-Pass part_1.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/6. Convert The Image To High-Pass part_1.{outputFile}', transparent=True)
     plt.close(fig)
 
     plt.imshow(np.log1p(np.abs(G)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'7. Convert The Image To High-Pass part_2.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/7. Convert The Image To High-Pass part_2.{outputFile}', transparent=True)
     plt.close(fig)
 
     HPF = 1 - H
     plt.imshow(HPF, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'8. High-Pass Filter.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/8. High-Pass Filter.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * HPF
@@ -134,7 +135,7 @@ elif algorithm == "Gaussian filter":
 
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'9. High-Pass Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/9. High-Pass Image.{outputFile}', transparent=True)
     plt.close(fig)
 
 elif algorithm == "Frequency Domain Filter Laplace Filter":
@@ -142,13 +143,13 @@ elif algorithm == "Frequency Domain Filter Laplace Filter":
     f = f / 255
     plt.imshow(f, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. The Original Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. The Original Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     F = np.fft.fftshift(np.fft.fft2(f))
     plt.imshow(np.log1p(np.abs(F)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. Conversion To The Frequency Domain.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. Conversion To The Frequency Domain.{outputFile}', transparent=True)
     plt.close(fig)
 
     P, Q = F.shape
@@ -158,7 +159,7 @@ elif algorithm == "Frequency Domain Filter Laplace Filter":
             H[u, v] = -4 * np.pi * np.pi * ((u - P / 2) ** 2 + (v - Q / 2) ** 2)
     plt.imshow(H, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'3. Laplace Filter.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/3. Laplace Filter.{outputFile}', transparent=True)
     plt.close(fig)
 
     Lap = H * F
@@ -170,7 +171,7 @@ elif algorithm == "Frequency Domain Filter Laplace Filter":
 
     plt.imshow(LapScaled, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'4. Convert The Value Of The Laplace Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/4. Convert The Value Of The Laplace Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     c = -1
@@ -179,28 +180,28 @@ elif algorithm == "Frequency Domain Filter Laplace Filter":
 
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'5. Execution result.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/5. Execution result.{outputFile}', transparent=True)
     plt.close(fig)
 
 elif algorithm == "Perfect low and high pass filter":
     f = cv2.imread(imagePath, 0)
     plt.imshow(f, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. The Original Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. The Original Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     F = np.fft.fft2(f)
     plt.imshow(np.log1p(np.abs(F)),
                cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. Converting An Image To A Frequency part_1.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. Converting An Image To A Frequency part_1.{outputFile}', transparent=True)
     plt.close(fig)
 
     Fshift = np.fft.fftshift(F)
     plt.imshow(np.log1p(np.abs(Fshift)),
                cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'3. Converting An Image To A Frequency part_2.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/3. Converting An Image To A Frequency part_2.{outputFile}', transparent=True)
     plt.close(fig)
 
     M, N = f.shape
@@ -215,58 +216,58 @@ elif algorithm == "Perfect low and high pass filter":
                 H[u, v] = 0
     plt.imshow(H, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'4. Converting An Image To A Low-Pass part_1.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/4. Converting An Image To A Low-Pass part_1.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * H
     plt.imshow(np.log1p(np.abs(Gshift)),
                cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'5. Converting An Image To A Low-Pass part_2.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/5. Converting An Image To A Low-Pass part_2.{outputFile}', transparent=True)
     plt.close(fig)
 
     G = np.fft.ifftshift(Gshift)
     plt.imshow(np.log1p(np.abs(G)),
                cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'6. Converting An Image To A Low-Pass part_3.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/6. Converting An Image To A Low-Pass part_3.{outputFile}', transparent=True)
     plt.close(fig)
 
     g = np.abs(np.fft.ifft2(G))
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'7. Low-Pass Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/7. Low-Pass Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     H = 1 - H
     plt.imshow(H, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'8. Converting An Image To A High-Pass part_1.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/8. Converting An Image To A High-Pass part_1.{outputFile}', transparent=True)
     plt.close(fig)
 
     Gshift = Fshift * H
     plt.imshow(np.log1p(np.abs(Gshift)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'9. Converting An Image To A High-Pass part_2.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/9. Converting An Image To A High-Pass part_2.{outputFile}', transparent=True)
     plt.close(fig)
 
     G = np.fft.ifftshift(Gshift)
     plt.imshow(np.log1p(np.abs(G)), cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'10. Converting An Image To A High-Pass part_3.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/10. Converting An Image To A High-Pass part_3.{outputFile}', transparent=True)
     plt.close(fig)
 
     g = np.abs(np.fft.ifft2(G))
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'11. High-Pass Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/11. High-Pass Image.{outputFile}', transparent=True)
     plt.close(fig)
 
 elif algorithm == "Laplace filter":
     img = cv2.imread(imagePath, 0)
     plt.imshow(img, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. The Original Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. The Original Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     kernel = np.array([[0, 1, 0],
@@ -278,20 +279,20 @@ elif algorithm == "Laplace filter":
                                   kernel=kernel)
     plt.imshow(LaplacianImage, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. Low-Pass Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. Low-Pass Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     c = -1
     g = img + c * LaplacianImage
     plt.imshow(g, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'3. Process Images.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/3. Process Images.{outputFile}', transparent=True)
     plt.close(fig)
 
     gClip = np.clip(g, 0, 255)
     plt.imshow(gClip, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'4. High-Pass Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/4. High-Pass Image.{outputFile}', transparent=True)
     plt.close(fig)
 
 elif algorithm == "SVD":
@@ -310,7 +311,7 @@ elif algorithm == "SVD":
         low_rank = u[:, :comps[i]] @ np.diag(s[:comps[i]]) @ v[:comps[i], :]
         plt.imshow(low_rank, cmap='gray')
         plt.axis('off')
-        plt.savefig(pathToSave + f'Actual Image With Component={comps[i]}.{outputFile}', transparent=True)
+        plt.savefig(pathToSave + f'/Actual Image With Component={comps[i]}.{outputFile}', transparent=True)
         plt.close(fig)
 
 else:
@@ -362,34 +363,35 @@ else:
 
     plt.imshow(img, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'1. The Original Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/1. The Original Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     plt.imshow(magnitude_spectrum, cmap='gray')
     plt.axis('off')
-    plt.savefig(pathToSave + f'2. FFT Of Image.{outputFile}', transparent=True)
+    plt.savefig(pathToSave + f'/2. FFT Of Image.{outputFile}', transparent=True)
     plt.close(fig)
 
     if isMask:
         plt.imshow(fshift_mask_mag, cmap='gray')
         plt.axis('off')
-        plt.savefig(pathToSave + f'3. FFT With Mask.{outputFile}', transparent=True)
+        plt.savefig(pathToSave + f'/3. FFT With Mask.{outputFile}', transparent=True)
         plt.close(fig)
 
         plt.imshow(img_back, cmap='gray')
         plt.axis('off')
-        plt.savefig(pathToSave + f'4. After Inverse FFT With Mask.{outputFile}', transparent=True)
+        plt.savefig(pathToSave + f'/4. After Inverse FFT With Mask.{outputFile}', transparent=True)
         plt.close(fig)
     else:
         plt.imshow(fshift_mask_mag, cmap='gray')
         plt.axis('off')
-        plt.savefig(pathToSave + f'3. FFT Without Mask.{outputFile}', transparent=True)
+        plt.savefig(pathToSave + f'/3. FFT Without Mask.{outputFile}', transparent=True)
         plt.close(fig)
 
         plt.imshow(img_back, cmap='gray')
         plt.axis('off')
-        plt.savefig(pathToSave + f'4. After Inverse FFT Without Mask.{outputFile}', transparent=True)
+        plt.savefig(pathToSave + f'/4. After Inverse FFT Without Mask.{outputFile}', transparent=True)
         plt.close(fig)
+
 
 '''
                    ``

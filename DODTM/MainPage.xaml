@@ -6,7 +6,7 @@
              x:Class="DODTM.MainPage">
 
     <Grid RowDefinitions="Auto, Auto, Auto, *, Auto, Auto, Auto"
-        ColumnDefinitions="*, *, *, *, *, *"
+        ColumnDefinitions="*, *, *, *, *, *, *"
         Padding="10">
 
         <Image x:Name="imageProcess"
@@ -26,9 +26,19 @@
             MinimumHeightRequest="40" 
             MaximumHeightRequest="50" />
 
+        <Button
+            Grid.Row="0" 
+            Grid.Column="6"
+            Grid.ColumnSpan="1"
+            Margin="5"
+            Text="i"
+            Clicked="InfoClicked"
+            MinimumHeightRequest="40" 
+            MaximumHeightRequest="50" />
+
         <Entry x:Name="openImgEntry"
             Grid.Row="0" 
-            Grid.Column="4"
+            Grid.Column="5"
             Grid.ColumnSpan="2"
             Margin="5"
             Text=""
@@ -40,7 +50,7 @@
         <ListView x:Name="algorithmList" 
             Grid.Row="2"
             Grid.Column="4"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Margin="5"
             ItemSelected="AlgorithmListChanged" 
             MinimumHeightRequest="50" 
@@ -49,7 +59,7 @@
         <Entry x:Name="argEntry1" 
             Grid.Row="3" 
             Grid.Column="4"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Margin="5"
             Text=""
             Placeholder="{extension:Translate Key=CountOfImages}" 
@@ -60,7 +70,7 @@
         <Entry x:Name="argEntry2"
             Grid.Row="4"
             Grid.Column="4"
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Margin="5"
             Text=""
             Placeholder="{extension:Translate Key=Step}"
@@ -77,6 +87,7 @@
         <Label x:Name="label" 
             Grid.Row="3" 
             Grid.Column="5"
+            Grid.ColumnSpan="2"
             FontSize="20" 
             Text="{extension:Translate Key=ApplyAMask}"  
             MinimumHeightRequest="40" 
@@ -85,7 +96,7 @@
         <ListView x:Name="saveList"
             Grid.Row="5" 
             Grid.Column="4" 
-            Grid.ColumnSpan="2"
+            Grid.ColumnSpan="3"
             Margin="5"
             ItemSelected="SaveListChanged"
             MinimumHeightRequest="90" 
@@ -95,6 +106,7 @@
             Grid.Row="7"
             Grid.Column="0"
             Margin="5"
+            Grid.ColumnSpan="2"
             Text=""
             Placeholder="{extension:Translate Key=imgWidth}"
             Keyboard="Numeric"
@@ -103,7 +115,8 @@
 
         <Entry x:Name="heightImgEntry"
             Grid.Row="7"
-            Grid.Column="1"
+            Grid.Column="2"
+            Grid.ColumnSpan="2"
             Margin="5"
             Text=""
             Placeholder="{extension:Translate Key=imgHeight}"
@@ -113,7 +126,7 @@
 
         <Entry x:Name="dpiImgEntry"
             Grid.Row="7"
-            Grid.Column="2"
+            Grid.Column="4"
             Margin="5"
             Text=""
             Placeholder="{extension:Translate Key=imgDPI}"
@@ -123,7 +136,7 @@
 
         <Button x:Name="processBtn"
             Grid.Row="7" 
-            Grid.Column="4"
+            Grid.Column="5"
             Grid.ColumnSpan="2"
             Text="{extension:Translate Key=Process}"
             Clicked="ProcessClicked" 

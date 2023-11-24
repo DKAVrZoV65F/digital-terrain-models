@@ -117,14 +117,23 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AppInfo" xml:space="preserve">
+    <value>Информацио о приложении</value>
+  </data>
   <data name="ApplyAMask" xml:space="preserve">
     <value>Применить маску?</value>
+  </data>
+  <data name="Author" xml:space="preserve">
+    <value>Автор: Сергей Крайнов</value>
   </data>
   <data name="CountOfImages" xml:space="preserve">
     <value>Количество изображений</value>
   </data>
   <data name="EnterPathToImage" xml:space="preserve">
     <value>Введите путь к изображению</value>
+  </data>
+  <data name="ErrorWithAlgorithm" xml:space="preserve">
+    <value>Укажите алгоритм обработки</value>
   </data>
   <data name="ErrorWithImageRequires" xml:space="preserve">
     <value>Файл не содержит требуемого расширения!</value>
@@ -144,6 +153,9 @@
   <data name="imgWidth" xml:space="preserve">
     <value>Ширина изображения</value>
   </data>
+  <data name="Language" xml:space="preserve">
+    <value>Язык:</value>
+  </data>
   <data name="NameProject" xml:space="preserve">
     <value>Обработка изображений</value>
   </data>
@@ -158,5 +170,11 @@
   </data>
   <data name="SuccessWork" xml:space="preserve">
     <value>Успешно завершено и сохранено в</value>
+  </data>
+  <data name="Thanks" xml:space="preserve">
+    <value>Спасибо</value>
+  </data>
+  <data name="Version" xml:space="preserve">
+    <value>Версия:</value>
   </data>
 </root>

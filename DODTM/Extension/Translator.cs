@@ -1,13 +1,22 @@
 ﻿using DODTM.Resources.Strings;
+using System.ComponentModel;
 using System.Globalization;
 
 namespace DODTM.Extension;
 
-public class Translator
+public class Translator: INotifyPropertyChanged
 {
     public string this[string key] => AppResources.ResourceManager.GetString(key, CultureInfo);
     public CultureInfo? CultureInfo { get; set; }
     public static Translator Instance { get; set; } = new Translator();
+
+    //public event PropertyChangingEventHandler PropertyChanging;
+    public event PropertyChangedEventHandler? PropertyChanged;
+
+    public void OnPropertyChanged()
+    {
+        PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(null));
+    }
 }
 
 /*

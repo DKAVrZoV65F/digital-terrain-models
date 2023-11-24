@@ -61,11 +61,29 @@ namespace DODTM.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Information about the application.
+        /// </summary>
+        internal static string AppInfo {
+            get {
+                return ResourceManager.GetString("AppInfo", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Apply a mask?.
         /// </summary>
         internal static string ApplyAMask {
             get {
                 return ResourceManager.GetString("ApplyAMask", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Author: Sergey Krainov.
+        /// </summary>
+        internal static string Author {
+            get {
+                return ResourceManager.GetString("Author", resourceCulture);
             }
         }
         
@@ -84,6 +102,15 @@ namespace DODTM.Resources.Strings {
         internal static string EnterPathToImage {
             get {
                 return ResourceManager.GetString("EnterPathToImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Specify the processing algorithm.
+        /// </summary>
+        internal static string ErrorWithAlgorithm {
+            get {
+                return ResourceManager.GetString("ErrorWithAlgorithm", resourceCulture);
             }
         }
         
@@ -142,6 +169,15 @@ namespace DODTM.Resources.Strings {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Language:.
+        /// </summary>
+        internal static string Language {
+            get {
+                return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Image processing.
         /// </summary>
         internal static string NameProject {
@@ -183,6 +219,24 @@ namespace DODTM.Resources.Strings {
         internal static string SuccessWork {
             get {
                 return ResourceManager.GetString("SuccessWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Thanks.
+        /// </summary>
+        internal static string Thanks {
+            get {
+                return ResourceManager.GetString("Thanks", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Version:.
+        /// </summary>
+        internal static string Version {
+            get {
+                return ResourceManager.GetString("Version", resourceCulture);
             }
         }
     }
