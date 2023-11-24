@@ -63,7 +63,8 @@ public partial class MainPage : ContentPage
     {
 #if MACCATALYST
         string pathLocal = openImgEntry.Text;
-        if(!string.IsNullOrEmpty(pathLocal)) {
+        if (!string.IsNullOrEmpty(pathLocal))
+        {
             path = pathLocal;
             imageProcess.Source = path;
         }
@@ -113,20 +114,6 @@ public partial class MainPage : ContentPage
         if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
 
         string pathFolder = "";
-
-#if MACCATALYST
-        pathFolder = "~";
-#elif WINDOWS
-        var pathFolderLoc = await FolderPicker.PickAsync(default);
-
-        if (string.IsNullOrEmpty(pathFolderLoc.Folder?.Path))
-        {
-            await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithPathFolder"].ToString(), "ОK");
-            return;
-        }
-        pathFolder = pathFolderLoc.Folder.Path + "\\" + selectedAlg;
-#endif
-
         string ext = Path.GetExtension(path).Replace(".", "");
         foreach (var type in typeFiles)
         {
@@ -137,18 +124,19 @@ public partial class MainPage : ContentPage
 
                 string outputFileImage = (string)saveList.SelectedItem ?? "png";
 #if MACCATALYST
-try
-{
-    Directory.CreateDirectory("~" + $"\\{selectedAlg}");
-}
-catch (Exception except)
-{
-    await DisplayAlert(nameOfProject, except.Message, "ОK");
-}
-                //
+                pathFolder = "~";
+                ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
 #elif WINDOWS
+                var pathFolderLoc = await FolderPicker.PickAsync(default);
+
+                if (string.IsNullOrEmpty(pathFolderLoc.Folder?.Path))
+                {
+                    await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithPathFolder"].ToString(), "ОK");
+                    return;
+                }
+                pathFolder = pathFolderLoc.Folder.Path + "\\" + selectedAlg;
                 Directory.CreateDirectory(pathFolder);
-#endif
+
                 if (selectedAlg.Equals("Barcode"))
                 {
                     int arg = Int32.Parse(arg1);
@@ -157,29 +145,38 @@ catch (Exception except)
                 else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
                 await DisplayAlert(nameOfProject, (Extension.Translator.Instance["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
                 return;
+#endif
             }
         }
         await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithImageRequires"].ToString(), "ОK");
     }
 
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
-    private void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string outputFile, string arg1 = "0", string arg2 = "0", int widthImg = 800, int heightImg = 800)
+    private async void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string outputFile, string arg1 = "0", string arg2 = "0", int widthImg = 800, int heightImg = 800)
     {
-        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
-
         int dpiImg = (!string.IsNullOrEmpty(dpiImgEntry.Text)) ? Int32.Parse(widthImgEntry.Text) : 100;
-        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
-        {
-            RedirectStandardOutput = true,
-            UseShellExecute = false,
-            CreateNoWindow = true
-        };
-        System.Diagnostics.Process proc = new()
-        {
-            StartInfo = procStartInfo
-        };
-        _ = proc.Start();
-        _ = proc.StandardOutput.ReadToEnd();
+
+#if MACCATALYST
+        folderPath = "/Users/" + Environment.UserName;
+        string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"";
+        await Clipboard.SetTextAsync(command);
+        await DisplayAlert(nameOfProject, "The command was copied to the clipboard.\n Paste this command to the command bar where located DODTM_Algorithm:\n" + command, "ОK");
+        return;
+#elif WINDOWS
+            string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
+            System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
+            {
+                RedirectStandardOutput = true,
+                UseShellExecute = false,
+                CreateNoWindow = true
+            };
+            System.Diagnostics.Process proc = new()
+            {
+                StartInfo = procStartInfo
+            };
+            _ = proc.Start();
+            _ = proc.StandardOutput.ReadToEnd();
+#endif
     }
 
     private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)

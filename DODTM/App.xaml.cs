@@ -17,9 +17,13 @@ public partial class App : Application
     protected override Window CreateWindow(IActivationState activationState)
     {
         var windows = base.CreateWindow(activationState);
-
+#if MACCATALYST
+        const int minWidth = 700;
+        const int minHeight = 750;
+#else
         const int minWidth = 700;
         const int minHeight = 550;
+#endif
 
         windows.MinimumWidth = minWidth;
         windows.MinimumHeight = minHeight;
