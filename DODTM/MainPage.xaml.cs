@@ -5,6 +5,7 @@ using DODTM.Extension;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics.CodeAnalysis;
+using System.Drawing;
 using System.Globalization;
 
 namespace DODTM;
@@ -124,7 +125,7 @@ public partial class MainPage : ContentPage
 
                 string outputFileImage = (string)saveList.SelectedItem ?? "png";
 #if MACCATALYST
-                pathFolder = "~";
+                pathFolder = "/Users/" + Environment.UserName;
                 ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
 #elif WINDOWS
                 var pathFolderLoc = await FolderPicker.PickAsync(default);
@@ -157,25 +158,32 @@ public partial class MainPage : ContentPage
         int dpiImg = (!string.IsNullOrEmpty(dpiImgEntry.Text)) ? Int32.Parse(widthImgEntry.Text) : 100;
 
 #if MACCATALYST
-        folderPath = "/Users/" + Environment.UserName;
         string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"";
         await Clipboard.SetTextAsync(command);
         await DisplayAlert(nameOfProject, "The command was copied to the clipboard.\n Paste this command to the command bar where located DODTM_Algorithm:\n" + command, "ОK");
         return;
 #elif WINDOWS
-            string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
-            System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
-            {
-                RedirectStandardOutput = true,
-                UseShellExecute = false,
-                CreateNoWindow = true
-            };
-            System.Diagnostics.Process proc = new()
-            {
-                StartInfo = procStartInfo
-            };
-            _ = proc.Start();
-            _ = proc.StandardOutput.ReadToEnd();
+        System.Drawing.Image img = new Bitmap(pathImage);
+
+        var bmp = new Bitmap(img.Width, img.Height,
+                          System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
+        using (var gr = Graphics.FromImage(bmp))
+            gr.DrawImage(img, new System.Drawing.Rectangle(0, 0, img.Width, img.Height));
+        bmp.Save(folderPath + "\\ConvertedImageTo32Bit.png");
+
+        string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
+        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
+        {
+            RedirectStandardOutput = true,
+            UseShellExecute = false,
+            CreateNoWindow = true
+        };
+        System.Diagnostics.Process proc = new()
+        {
+            StartInfo = procStartInfo
+        };
+        _ = proc.Start();
+        _ = proc.StandardOutput.ReadToEnd();
 #endif
     }
 
