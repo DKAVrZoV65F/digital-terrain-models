@@ -178,7 +178,11 @@ public partial class MainPage : ContentPage
         {
             endRange = Int32.Parse(arg1);
         }
-        
+        else if (algorithmSelect.Equals("DFT"))
+        {
+            arg2 = arg1;
+        }
+
 #if MACCATALYST
         string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"";
         await Clipboard.SetTextAsync(command);
