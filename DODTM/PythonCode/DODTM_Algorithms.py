@@ -303,8 +303,8 @@ elif algorithm == "SVD":
     img = cv2.imread(imagePath)
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     u, s, v = np.linalg.svd(gray_image, full_matrices=False)
-    if rangeToGen > int(s.shape[0]):
-        rangeToGen = int(s.shape[0])
+    if endRange > int(s.shape[0]):
+        endRange = int(s.shape[0])
     comps = []
     for i in range(startRange, endRange, step):
         comps.append(i)

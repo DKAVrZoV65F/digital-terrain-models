@@ -25,8 +25,6 @@ public partial class MainPage : ContentPage
     string? selectedOutput = "";
     private readonly string nameOfProject = AppInfo.Current.Name;
 
-
-
     public MainPage()
     {
         InitializeComponent();
@@ -128,7 +126,7 @@ public partial class MainPage : ContentPage
                 int width = (!string.IsNullOrEmpty(widthImgEntry.Text) && Int32.Parse(widthImgEntry.Text) > 800) ? Int32.Parse(widthImgEntry.Text) : 800;
                 int height = (!string.IsNullOrEmpty(heightImgEntry.Text) && Int32.Parse(heightImgEntry.Text) > 800) ? Int32.Parse(heightImgEntry.Text) : 800;
 
-                string outputFileImage = (string)saveList.SelectedItem ?? "png";
+                string outputFileImage = saveList.SelectedItem as string ?? "png";
 #if MACCATALYST
                 pathFolder = "/Users/" + Environment.UserName;
                 ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
@@ -157,9 +155,25 @@ public partial class MainPage : ContentPage
     private async void ExecuteImage(string algorithmSelect, string pathImage, string folderPath, string outputFile, string arg1 = "0", string arg2 = "0", int widthImg = 800, int heightImg = 800)
     {
         int dpiImg = (!string.IsNullOrEmpty(dpiImgEntry.Text)) ? Int32.Parse(widthImgEntry.Text) : 100;
+        int startRange = 0;
+        int endRange = 1;
+
+        string[] words = arg1.Split('-');
+        bool rangeSelected = false;
+        
+        if (words.Length > 1)
+        {
+            rangeSelected = Int32.TryParse(words[1].Trim(), out endRange);
+            rangeSelected = Int32.TryParse(words[0].Trim(), out startRange);
+        }
+
+        if (rangeSelected == false)
+        {
+            endRange = Int32.Parse(arg1);
+        }
 
 #if MACCATALYST
-        string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"";
+        string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"";
         await Clipboard.SetTextAsync(command);
         await DisplayAlert(nameOfProject, "The command was copied to the clipboard.\n Paste this command to the command bar where located DODTM_Algorithm:\n" + command, "ОK");
         return;
@@ -173,18 +187,6 @@ public partial class MainPage : ContentPage
         bmp.Save(folderPath + "\\ConvertedImageTo32Bit.png");
 
         string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
-
-
-        int startRange = 0;
-        int endRange = 1;
-
-        string[] words = arg1.Split('-');
-        bool rangeSelected = false;
-        if (words.Length > 1)
-        {
-            rangeSelected = Int32.TryParse(words[1].Trim(), out endRange);
-            rangeSelected = Int32.TryParse(words[0].Trim(), out startRange);
-        }
 
         System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"")
         {
@@ -212,12 +214,12 @@ public partial class MainPage : ContentPage
         BarCodeLineContainer<byte> barcodeContainer = container.GetBarCode<byte>();
         string[] words = rangeOrLength.Split('-');
         bool rangeSelected = false;
+
         if (words.Length > 1)
         {
             rangeSelected = Int32.TryParse(words[0].Trim(), out _);
             rangeSelected = Int32.TryParse(words[1].Trim(), out _);
         }
-        
 
         if (rangeSelected)
         {
