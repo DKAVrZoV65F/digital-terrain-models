@@ -145,13 +145,11 @@ public partial class MainPage : ContentPage
                 if (selectedAlg.Equals("Barcode")) MainPage.ExecuteBarcode(pathToImg: path, rangeOrLength: arg1, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
                 else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
                 await DisplayAlert(nameOfProject, (LocalizationResourceManager["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
+                return;
 #endif
             }
-            else
-            {
-                await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithImageRequires"].ToString(), "ОK");
-            }
         }
+        await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithImageRequires"].ToString(), "ОK");
     }
 
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
