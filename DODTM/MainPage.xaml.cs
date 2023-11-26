@@ -81,7 +81,6 @@ public partial class MainPage : ContentPage
             path = filePath.FullPath;
             imageProcess.Source = path;
         }
-        return;
 #endif
     }
 
@@ -146,11 +145,13 @@ public partial class MainPage : ContentPage
                 if (selectedAlg.Equals("Barcode")) MainPage.ExecuteBarcode(pathToImg: path, rangeOrLength: arg1, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
                 else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
                 await DisplayAlert(nameOfProject, (LocalizationResourceManager["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
-                return;
 #endif
             }
+            else
+            {
+                await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithImageRequires"].ToString(), "ОK");
+            }
         }
-        await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithImageRequires"].ToString(), "ОK");
     }
 
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
@@ -162,23 +163,19 @@ public partial class MainPage : ContentPage
 
         string[] words = arg1.Split('-');
         bool rangeSelected = false;
-        
+
         if (words.Length > 1)
         {
             rangeSelected = Int32.TryParse(words[1].Trim(), out endRange);
-            rangeSelected = Int32.TryParse(words[0].Trim(), out startRange);
+            rangeSelected = rangeSelected && Int32.TryParse(words[0].Trim(), out startRange);
         }
 
-        if (rangeSelected == false)
-        {
-            endRange = Int32.Parse(arg1);
-        }
+        endRange = rangeSelected == false && words.Length > 1 ? Int32.Parse(words[0].Trim()) : Int32.Parse(arg1);
 
 #if MACCATALYST
         string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"";
         await Clipboard.SetTextAsync(command);
         await DisplayAlert(nameOfProject, "The command was copied to the clipboard.\n Paste this command to the command bar where located DODTM_Algorithm:\n" + command, "ОK");
-        return;
 #elif WINDOWS
         System.Drawing.Image img = new Bitmap(pathImage);
 
@@ -265,6 +262,10 @@ public partial class MainPage : ContentPage
         }
     }
 }
+
+
+
+
 
 /*
                    ``
