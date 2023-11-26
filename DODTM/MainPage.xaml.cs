@@ -31,7 +31,6 @@ public partial class MainPage : ContentPage
     {
         InitializeComponent();
         BindingContext = this;
-
         saveList.ItemsSource = typeFiles;
         label.IsVisible = false;
         switcher.IsVisible = false;
@@ -51,6 +50,7 @@ public partial class MainPage : ContentPage
     private async void InfoClicked(object sender, EventArgs e)
     {
         string result = await DisplayActionSheet(LocalizationResourceManager["AppInfo"].ToString(), LocalizationResourceManager["Thanks"].ToString(), "GitHub", LocalizationResourceManager["Version"].ToString() + $" {AppInfo.Current.VersionString}", LocalizationResourceManager["Language"].ToString() + $"  {currentLanguage}", LocalizationResourceManager["Author"].ToString());
+        
         if (result == null) return;
         else if (result == "GitHub") await Clipboard.SetTextAsync("https://github.com/DKAVrZoV65F/Digital-Terrain-Models");
         else if (result.Contains(ENGLISH) || result.Contains(RUSSIAN))
@@ -69,6 +69,7 @@ public partial class MainPage : ContentPage
     {
 #if MACCATALYST
         string pathLocal = openImgEntry.Text;
+        
         if (!string.IsNullOrEmpty(pathLocal))
         {
             path = pathLocal;
@@ -76,6 +77,7 @@ public partial class MainPage : ContentPage
         }
 #elif WINDOWS
         var filePath = await FilePicker.PickAsync(default);
+        
         if (!string.IsNullOrEmpty(filePath?.ToString()))
         {
             path = filePath.FullPath;
@@ -87,8 +89,8 @@ public partial class MainPage : ContentPage
     private void AlgorithmListChanged(object sender, SelectedItemChangedEventArgs e)
     {
         selectedAlg = e.SelectedItem.ToString();
+        
         if (selectedAlg == null) return;
-
         label.IsVisible = selectedAlg.Equals("DFT");
         switcher.IsVisible = selectedAlg.Equals("DFT");
         argEntry1.IsVisible = selectedAlg.Equals("SVD") || selectedAlg.Equals("Barcode");
