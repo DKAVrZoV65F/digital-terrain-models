@@ -178,15 +178,6 @@ namespace DODTM.Resources.Strings {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Image processing.
-        /// </summary>
-        internal static string NameProject {
-            get {
-                return ResourceManager.GetString("NameProject", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Open image.
         /// </summary>
         internal static string OpenImage {

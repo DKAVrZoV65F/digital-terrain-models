@@ -2,6 +2,7 @@
 using BarcodeNet.Managment;
 using CommunityToolkit.Maui.Storage;
 using DODTM.Extension;
+using DODTM.Resources.Strings;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.PixelFormats;
 using System.Diagnostics.CodeAnalysis;
@@ -12,19 +13,25 @@ namespace DODTM;
 
 public partial class MainPage : ContentPage
 {
+    public LocalizationResourceManager LocalizationResourceManager
+        => LocalizationResourceManager.Instance;
+
     readonly string[] typeFiles = ["png", "jpeg", "bmp", "jpg"];
     readonly string[] algorithmsDefault = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Barcode"];
     readonly string[] algorithmsForMac = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter"];
     string currentLanguage = "English";
-
     string path = "";
     string? selectedAlg = "";
     string? selectedOutput = "";
-    readonly string nameOfProject = Extension.Translator.Instance["NameProject"].ToString();
+    private readonly string nameOfProject = AppInfo.Current.Name;
+
+
 
     public MainPage()
     {
         InitializeComponent();
+        BindingContext = this;
+
         saveList.ItemsSource = typeFiles;
         label.IsVisible = false;
         switcher.IsVisible = false;
@@ -43,20 +50,18 @@ public partial class MainPage : ContentPage
 
     private async void InfoClicked(object sender, EventArgs e)
     {
-        string result = await DisplayActionSheet(Extension.Translator.Instance["AppInfo"].ToString(), Extension.Translator.Instance["Thanks"].ToString(), "GitHub", Extension.Translator.Instance["Version"].ToString() + " 2.1.0", Extension.Translator.Instance["Language"].ToString() + $"  {currentLanguage}", Extension.Translator.Instance["Author"].ToString());
+        string result = await DisplayActionSheet(LocalizationResourceManager["AppInfo"].ToString(), LocalizationResourceManager["Thanks"].ToString(), "GitHub", LocalizationResourceManager["Version"].ToString() + $" {AppInfo.Current.VersionString}", LocalizationResourceManager["Language"].ToString() + $"  {currentLanguage}", LocalizationResourceManager["Author"].ToString());
         if (result == null) return;
         else if (result == "GitHub") await Clipboard.SetTextAsync("https://github.com/DKAVrZoV65F/Digital-Terrain-Models");
-        else if (result.Contains("English"))
+        else if (result.Contains("English") || result.Contains("Русский"))
         {
-            Translator.Instance.CultureInfo = new CultureInfo("ru-RU");
-            Translator.Instance.OnPropertyChanged();
-            currentLanguage = "Русский";
-        }
-        else if (result.Contains("Русский"))
-        {
-            Translator.Instance.CultureInfo = new CultureInfo("en-US");
-            Translator.Instance.OnPropertyChanged();
-            currentLanguage = "English";
+            var switchToCulture = AppResources.Culture.TwoLetterISOLanguageName.
+                Equals("en", StringComparison.InvariantCultureIgnoreCase) ?
+                new CultureInfo("ru-RU") : new CultureInfo("en-US");
+
+            LocalizationResourceManager.Instance.SetCulture(switchToCulture);
+
+            currentLanguage = (currentLanguage.Equals("English")) ? "Русский" : "English";
         }
     }
 
@@ -98,7 +103,7 @@ public partial class MainPage : ContentPage
     {
         if (selectedAlg == null || selectedAlg == "")
         {
-            await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithAlgorithm"].ToString(), "ОK");
+            await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithAlgorithm"].ToString(), "ОK");
             return;
         }
 
@@ -108,7 +113,7 @@ public partial class MainPage : ContentPage
 
         if (string.IsNullOrEmpty(path))
         {
-            await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithPathToFile"].ToString(), "ОK");
+            await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithPathToFile"].ToString(), "ОK");
             return;
         }
 
@@ -132,24 +137,20 @@ public partial class MainPage : ContentPage
 
                 if (string.IsNullOrEmpty(pathFolderLoc.Folder?.Path))
                 {
-                    await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithPathFolder"].ToString(), "ОK");
+                    await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithPathFolder"].ToString(), "ОK");
                     return;
                 }
                 pathFolder = pathFolderLoc.Folder.Path + "\\" + selectedAlg;
                 Directory.CreateDirectory(pathFolder);
 
-                if (selectedAlg.Equals("Barcode"))
-                {
-                    int arg = Int32.Parse(arg1);
-                    MainPage.ExecuteBarcode(pathToImg: path, length: arg, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
-                }
+                if (selectedAlg.Equals("Barcode")) MainPage.ExecuteBarcode(pathToImg: path, rangeOrLength: arg1, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
                 else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
-                await DisplayAlert(nameOfProject, (Extension.Translator.Instance["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
+                await DisplayAlert(nameOfProject, (LocalizationResourceManager["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
                 return;
 #endif
             }
         }
-        await DisplayAlert(nameOfProject, Extension.Translator.Instance["ErrorWithImageRequires"].ToString(), "ОK");
+        await DisplayAlert(nameOfProject, LocalizationResourceManager["ErrorWithImageRequires"].ToString(), "ОK");
     }
 
     [RequiresAssemblyFiles("Calls System.Reflection.Assembly.Location")]
@@ -172,7 +173,20 @@ public partial class MainPage : ContentPage
         bmp.Save(folderPath + "\\ConvertedImageTo32Bit.png");
 
         string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
-        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg1}\" \"{arg2}\"")
+
+
+        int startRange = 0;
+        int endRange = 1;
+
+        string[] words = arg1.Split('-');
+        bool rangeSelected = false;
+        if (words.Length > 1)
+        {
+            rangeSelected = Int32.TryParse(words[1].Trim(), out endRange);
+            rangeSelected = Int32.TryParse(words[0].Trim(), out startRange);
+        }
+
+        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"")
         {
             RedirectStandardOutput = true,
             UseShellExecute = false,
@@ -187,7 +201,7 @@ public partial class MainPage : ContentPage
 #endif
     }
 
-    private static void ExecuteBarcode(string pathToImg, int length, string pathToSave, string outputFile, int widthImg, int heightImg)
+    private static void ExecuteBarcode(string pathToImg, string rangeOrLength, string pathToSave, string outputFile, int widthImg, int heightImg)
     {
         ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
         int width = container.Width;
@@ -196,20 +210,55 @@ public partial class MainPage : ContentPage
         if (widthImg > width) width = widthImg;
         if (heightImg > height) height = heightImg;
         BarCodeLineContainer<byte> barcodeContainer = container.GetBarCode<byte>();
+        string[] words = rangeOrLength.Split('-');
+        bool rangeSelected = false;
+        if (words.Length > 1)
+        {
+            rangeSelected = Int32.TryParse(words[0].Trim(), out _);
+            rangeSelected = Int32.TryParse(words[1].Trim(), out _);
+        }
+        
 
-        Image<L8> img = barcodeContainer.BarCodes
-            .Where(x => x.Barcode.Length == length)
-            .Select(a => a.Barcode)
-            .ToImageL8(width, height, false);
-        img.Save($"{pathToSave}\\Equals_{length}.{outputFile}");
-        img.Dispose();
+        if (rangeSelected)
+        {
+            int length_1 = Int32.Parse(words[0].Trim());
+            int length_2 = Int32.Parse(words[1].Trim());
 
-        Image<L8> img1 = barcodeContainer.BarCodes
-            .Where(x => x.Barcode.Length != length)
-            .Select(a => a.Barcode)
-            .ToImageL8(width, height, false);
-        img1.Save($"{pathToSave}\\Another_{length}.{outputFile}");
-        img1.Dispose();
+            for (int range = length_1; range <= length_2; range++)
+            {
+                Image<L8> img = barcodeContainer.BarCodes
+                .Where(x => x.Barcode.Length == range)
+                .Select(a => a.Barcode)
+                .ToImageL8(width, height, false);
+                img.Save($"{pathToSave}\\Equals_{range}.{outputFile}");
+                img.Dispose();
+
+                Image<L8> img1 = barcodeContainer.BarCodes
+                    .Where(x => x.Barcode.Length != range)
+                    .Select(a => a.Barcode)
+                    .ToImageL8(width, height, false);
+                img1.Save($"{pathToSave}\\Another_{range}.{outputFile}");
+                img1.Dispose();
+            }
+        }
+        else
+        {
+            int length = Int32.Parse(words[0].Trim());
+
+            Image<L8> img = barcodeContainer.BarCodes
+                .Where(x => x.Barcode.Length == length)
+                .Select(a => a.Barcode)
+                .ToImageL8(width, height, false);
+            img.Save($"{pathToSave}\\Equals_{length}.{outputFile}");
+            img.Dispose();
+
+            Image<L8> img1 = barcodeContainer.BarCodes
+                .Where(x => x.Barcode.Length != length)
+                .Select(a => a.Barcode)
+                .ToImageL8(width, height, false);
+            img1.Save($"{pathToSave}\\Another_{length}.{outputFile}");
+            img1.Dispose();
+        }
     }
 }
 

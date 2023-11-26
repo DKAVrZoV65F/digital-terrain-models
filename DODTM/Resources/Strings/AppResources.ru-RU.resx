@@ -156,9 +156,6 @@
   <data name="Language" xml:space="preserve">
     <value>Язык:</value>
   </data>
-  <data name="NameProject" xml:space="preserve">
-    <value>Обработка изображений</value>
-  </data>
   <data name="OpenImage" xml:space="preserve">
     <value>Открыть изображение</value>
   </data>

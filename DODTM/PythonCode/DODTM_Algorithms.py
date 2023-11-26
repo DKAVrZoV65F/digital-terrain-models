@@ -296,8 +296,9 @@ elif algorithm == "Laplace filter":
     plt.close(fig)
 
 elif algorithm == "SVD":
-    rangeToGen = int(sys.argv[8])
-    step = int(sys.argv[9])
+    step = int(sys.argv[8])
+    startRange = int(sys.argv[9])
+    endRange = int(sys.argv[10])
 
     img = cv2.imread(imagePath)
     gray_image = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
@@ -305,7 +306,7 @@ elif algorithm == "SVD":
     if rangeToGen > int(s.shape[0]):
         rangeToGen = int(s.shape[0])
     comps = []
-    for i in range(0, rangeToGen, step):
+    for i in range(startRange, endRange, step):
         comps.append(i)
     for i in range(len(comps)):
         low_rank = u[:, :comps[i]] @ np.diag(s[:comps[i]]) @ v[:comps[i], :]

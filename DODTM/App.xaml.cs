@@ -8,9 +8,6 @@ public partial class App : Application
     public App()
     {
         InitializeComponent();
-
-        CultureInfo ci = CultureInfo.InstalledUICulture;
-        Translator.Instance.CultureInfo = new CultureInfo(ci.Name);
         MainPage = new AppShell();
     }
 
