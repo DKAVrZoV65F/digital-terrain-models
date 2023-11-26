@@ -50,7 +50,7 @@ public partial class MainPage : ContentPage
     private async void InfoClicked(object sender, EventArgs e)
     {
         string result = await DisplayActionSheet(LocalizationResourceManager["AppInfo"].ToString(), LocalizationResourceManager["Thanks"].ToString(), "GitHub", LocalizationResourceManager["Version"].ToString() + $" {AppInfo.Current.VersionString}", LocalizationResourceManager["Language"].ToString() + $"  {currentLanguage}", LocalizationResourceManager["Author"].ToString());
-        
+
         if (result == null) return;
         else if (result == "GitHub") await Clipboard.SetTextAsync("https://github.com/DKAVrZoV65F/Digital-Terrain-Models");
         else if (result.Contains(ENGLISH) || result.Contains(RUSSIAN))
@@ -77,7 +77,7 @@ public partial class MainPage : ContentPage
         }
 #elif WINDOWS
         var filePath = await FilePicker.PickAsync(default);
-        
+
         if (!string.IsNullOrEmpty(filePath?.ToString()))
         {
             path = filePath.FullPath;
@@ -89,7 +89,7 @@ public partial class MainPage : ContentPage
     private void AlgorithmListChanged(object sender, SelectedItemChangedEventArgs e)
     {
         selectedAlg = e.SelectedItem.ToString();
-        
+
         if (selectedAlg == null) return;
         label.IsVisible = selectedAlg.Equals("DFT");
         switcher.IsVisible = selectedAlg.Equals("DFT");
@@ -170,24 +170,35 @@ public partial class MainPage : ContentPage
             rangeSelected = rangeSelected && Int32.TryParse(words[0].Trim(), out startRange);
         }
 
-        endRange = rangeSelected == false && words.Length > 1 ? Int32.Parse(words[0].Trim()) : Int32.Parse(arg1);
-
+        if (algorithmSelect.Equals("SVD") && words.Length > 1 && !rangeSelected)
+        {
+            endRange = Int32.Parse(words[0].Trim());
+        }
+        else if (algorithmSelect.Equals("SVD") && !rangeSelected)
+        {
+            endRange = Int32.Parse(arg1);
+        }
+        
 #if MACCATALYST
         string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"";
         await Clipboard.SetTextAsync(command);
         await DisplayAlert(nameOfProject, "The command was copied to the clipboard.\n Paste this command to the command bar where located DODTM_Algorithm:\n" + command, "ОK");
 #elif WINDOWS
+
         System.Drawing.Image img = new Bitmap(pathImage);
 
         var bmp = new Bitmap(img.Width, img.Height,
                           System.Drawing.Imaging.PixelFormat.Format16bppRgb555);
         using (var gr = Graphics.FromImage(bmp))
             gr.DrawImage(img, new System.Drawing.Rectangle(0, 0, img.Width, img.Height));
-        bmp.Save(folderPath + "\\ConvertedImageTo32Bit.png");
+        string pathExec = folderPath + "\\ConvertedImageTo32Bit.png";
+        bmp.Save(pathExec);
+
+
 
         string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
 
-        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"")
+        System.Diagnostics.ProcessStartInfo procStartInfo = new(pythonPath, $"\"{algorithmSelect}\" \"{pathExec}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"")
         {
             RedirectStandardOutput = true,
             UseShellExecute = false,
