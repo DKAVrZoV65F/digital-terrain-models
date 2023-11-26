@@ -20,6 +20,8 @@ public partial class MainPage : ContentPage
     readonly string[] algorithmsDefault = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Barcode"];
     readonly string[] algorithmsForMac = ["DFT", "SVD", "Perfect low and high pass filter", "Butterworth Filter", "Laplace filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter"];
     string currentLanguage = "English";
+    readonly string RUSSIAN = "Русский";
+    readonly string ENGLISH = "English";
     string path = "";
     string? selectedAlg = "";
     string? selectedOutput = "";
@@ -51,7 +53,7 @@ public partial class MainPage : ContentPage
         string result = await DisplayActionSheet(LocalizationResourceManager["AppInfo"].ToString(), LocalizationResourceManager["Thanks"].ToString(), "GitHub", LocalizationResourceManager["Version"].ToString() + $" {AppInfo.Current.VersionString}", LocalizationResourceManager["Language"].ToString() + $"  {currentLanguage}", LocalizationResourceManager["Author"].ToString());
         if (result == null) return;
         else if (result == "GitHub") await Clipboard.SetTextAsync("https://github.com/DKAVrZoV65F/Digital-Terrain-Models");
-        else if (result.Contains("English") || result.Contains("Русский"))
+        else if (result.Contains(ENGLISH) || result.Contains(RUSSIAN))
         {
             var switchToCulture = AppResources.Culture.TwoLetterISOLanguageName.
                 Equals("en", StringComparison.InvariantCultureIgnoreCase) ?
@@ -59,7 +61,7 @@ public partial class MainPage : ContentPage
 
             LocalizationResourceManager.Instance.SetCulture(switchToCulture);
 
-            currentLanguage = (currentLanguage.Equals("English")) ? "Русский" : "English";
+            currentLanguage = (currentLanguage.Equals(ENGLISH)) ? RUSSIAN : ENGLISH;
         }
     }
 
