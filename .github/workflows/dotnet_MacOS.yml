@@ -30,11 +30,3 @@ jobs:
       with:
         name: macos-ci-build .app
         path: DODTM/bin/Release/net8.0-maccatalyst/**/*.app/
-
-    - name: Build MAUI MacCatalyst .pkg
-      run: dotnet publish DODTM/DODTM.csproj -c Release -f:net8.0-maccatalyst
-    - name: Upload MacCatalyst Artifact 
-      uses: actions/upload-artifact@v3.1.3
-      with:
-        name: macos-ci-build .pkg
-        path: DODTM/bin/Release/net8.0-maccatalyst/publish/*.pkg/
