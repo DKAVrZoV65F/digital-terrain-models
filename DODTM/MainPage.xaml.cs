@@ -94,7 +94,7 @@ public partial class MainPage : ContentPage
         label.IsVisible = selectedAlg.Equals("DFT");
         switcher.IsVisible = selectedAlg.Equals("DFT");
         argEntry1.IsVisible = selectedAlg.Equals("SVD") || selectedAlg.Equals("Barcode");
-        argEntry2.IsVisible = selectedAlg.Equals("SVD");
+        argEntry2.IsVisible = selectedAlg.Equals("SVD") || selectedAlg.Equals("Barcode");
     }
 
     private void SaveListChanged(object sender, SelectedItemChangedEventArgs e) => selectedOutput = e.SelectedItem.ToString();
@@ -118,7 +118,7 @@ public partial class MainPage : ContentPage
             return;
         }
 
-        if (selectedAlg.Equals("SVD") && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
+        if ((selectedAlg.Equals("SVD") || selectedAlg.Equals("Barcode")) && (string.IsNullOrEmpty(argEntry1.Text) || string.IsNullOrEmpty(argEntry2.Text))) return;
 
         string pathFolder = "";
         string ext = Path.GetExtension(path).Replace(".", "");
@@ -144,7 +144,7 @@ public partial class MainPage : ContentPage
                 pathFolder = pathFolderLoc.Folder.Path + "\\" + selectedAlg;
                 Directory.CreateDirectory(pathFolder);
 
-                if (selectedAlg.Equals("Barcode")) MainPage.ExecuteBarcode(pathToImg: path, rangeOrLength: arg1, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height);
+                if (selectedAlg.Equals("Barcode")) MainPage.ExecuteBarcode(pathToImg: path, rangeOrLength: arg1, pathToSave: pathFolder, outputFile: outputFileImage, widthImg: width, heightImg: height, step: Int32.Parse(arg2));
                 else ExecuteImage(algorithmSelect: selectedAlg, pathImage: path, folderPath: pathFolder, outputFile: outputFileImage, arg1: arg1, arg2: arg2, widthImg: width, heightImg: height);
                 await DisplayAlert(nameOfProject, (LocalizationResourceManager["SuccessWork"].ToString() + $" {pathFolder}"), "ОK");
                 return;
@@ -180,7 +180,7 @@ public partial class MainPage : ContentPage
         }
         else if (algorithmSelect.Equals("DFT"))
         {
-            arg2 = arg1;
+            arg2 = (arg1 == "True") ? arg1 : "";
         }
 
 #if MACCATALYST
@@ -197,8 +197,6 @@ public partial class MainPage : ContentPage
             gr.DrawImage(img, new System.Drawing.Rectangle(0, 0, img.Width, img.Height));
         string pathExec = folderPath + "\\ConvertedImageTo32Bit.png";
         bmp.Save(pathExec);
-
-
 
         string pythonPath = "C:\\Users\\" + Environment.UserName + "\\DODTM_Algorithms.exe";
 
@@ -217,7 +215,7 @@ public partial class MainPage : ContentPage
 #endif
     }
 
-    private static void ExecuteBarcode(string pathToImg, string rangeOrLength, string pathToSave, string outputFile, int widthImg, int heightImg)
+    private static void ExecuteBarcode(string pathToImg, string rangeOrLength, string pathToSave, string outputFile, int widthImg, int heightImg, int step)
     {
         ISImageContainer container = new(SixLabors.ImageSharp.Image.Load<L8>(pathToImg));
         int width = container.Width;
@@ -240,7 +238,7 @@ public partial class MainPage : ContentPage
             int length_1 = Int32.Parse(words[0].Trim());
             int length_2 = Int32.Parse(words[1].Trim());
 
-            for (int range = length_1; range <= length_2; range++)
+            for (int range = length_1; range <= length_2; range += step)
             {
                 Image<L8> img = barcodeContainer.BarCodes
                 .Where(x => x.Barcode.Length == range)
