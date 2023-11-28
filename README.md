@@ -3,7 +3,7 @@
 </h1>
 
 # Описание проекта
-Digital Terrain Models (Цифровые модели рельефа) - программа для анализа обработки поверхности после применения алгоритма.
+Digital Terrain Models (Цифровые модели рельефа) - программа для анализа обработки поверхности после применения алгоритма. Где содержится 8 алгоритвом такие как: "Butterworth Filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Perfect low and high pass filter", "Laplace filter", "SVD", "DFT" и "Barcode". Результаты выполнения можно отобразить в приложении Unity 3D.
 
 # Пример работы программы
 <h1 align="center">
@@ -12,31 +12,38 @@ Digital Terrain Models (Цифровые модели рельефа) - прог
 
 # Установка
 Установка происходит следующим образом:
-1) Скачать из программу по ссылке: [https://disk.yandex.ru/d/q79nFG5-GQIpmA](https://disk.yandex.ru/d/q79nFG5-GQIpmA) ;
-2) Разархивировать;
-3) Открыть папку "DODTM_1.1.0.0._Test", запустить установщик "DODTM_1.1.0.0_x64";
-4) Скопировать папку "PROG" и расположить по пути "C:/Users/User/";
-5) Запустить программу, если ранее программа была открыта, перезапустите программу;
-
-<h1 align="center">
-    <img src="assets/qr.png">
-</h1>
+1) Скачать программу последней версии [тут](https://github.com/DKAVrZoV65F/Digital-Terrain-Models/releases).
+2) Распокавать и запустить установочник для **Windows OS**: "DODTM_2.1.0.0_x64.msix" для **MacOS**: "DODTM". Если требуется лицензия, то лицензия лежит в папке рядом с установкой.
+3) После установки распоковать программу "DODTM_Algorithms.exe" по следующему пути для **Windows OS**: "C:/Users/User/"; для **MacOS**: "/Users/User/", где "User" - имя пользователя вашей учётной записи.
+4) Запустите программу и пользуйтесь.
 
 # Пример использования
-После установки, в папке "C:/Users/User/PROG/" находятся: ButterworthF.exe; DFT.exe; FDFGaussianF.exe; FDFLaplaceF.exe; PLaHPF.exe; SDIFULaplaceF.exe и SVD.exe;
-Запуск производится через командную строку и указываются параметры *(для большинство перечисленных программ требуются дополнительные параметры). 
-Для программ: ButterworthF.exe; FDFGaussianF.exe; FDFLaplaceF.exe; PLaHPF.exe и SDIFULaplaceF.exe; требуется указать 3 параметра:
-1) первый параметр - путь до изображения; 
-2) второй параметр - куда сохранить изображение;
-3) третий параметр - в каком формате сохранить изображение;
+**Windows OS** для работы с графическим файлом нужно запустить DODTM.exe, где требуется указать параметры и программа автоматически запустит "DODTM_Algorithms.exe" и после того как закончится выполнение, программа выдаст сообщение об успешной операции.
+
+**MacOS** для работы с графическим файлом нужно запустить DODTM, где требуется указать параметры и программа скопирует команду в буффер обмена для выполнения через командную строку.
+
+Файл "DODTM_Algorithms" содержит 7 алгоритмов "Butterworth Filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Perfect low and high pass filter", "Laplace filter", "SVD" и "DFT". 8й алгоритм содержится в приложении для **Windows OS** - "Barcode".
+Запуск производится через командную строку и указываются параметры. 
+Для алгоритмов: "Butterworth Filter", "Gaussian filter", "Frequency Domain Filter Laplace Filter", "Perfect low and high pass filter" и "Laplace filter" требуется указать 7 параметров:
+1) первый параметр - какой алгоритм применить (по умолчанию DFT);
+2) второй параметр - путь до изображения; 
+3) третий параметр - куда сохранить изображение;
+4) четвёртый параметр - в каком формате сохранить изображение (по умолчанию *.png);
+5) пятый параметр - длина изображения (по умолчанию 800);
+6) шестой параметр - ширина изображения (по умолчанию 800);
+7) седьмой параметр - DPI изображения (по умолчанию 100);
 
 Пример использования:
-> C:\Users\User> ButterworthF.exe "C:\Users\User\Pictures\picture.jpg" "C:\Users\User\Documents\" "png"
+> ./DODTM_Algorithms "Butterworth Filter" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100"
 
-Для DFT.exe требуется добавить булевский параметр(None или 1):
-> C:\Users\User> DFT.exe "C:\Users\User\Pictures\picture.jpg" "C:\Users\User\Documents\" "png" "1"
+Для DFT требуется указать булевский параметр:
 
-Для SVD.exe требуется указать 2 числовых параметра: 
-1) четвёртый параметр - количество итераций;
-2) пятый параметр - шаг;
-> C:\Users\User> SVD.exe "C:\Users\User\Pictures\picture.jpg" "C:\Users\User\Documents\" "png" "100" "10"
+8) восьмой параметр - True или False (по умолчанию False);
+> ./DODTM_Algorithms "DFT" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100" "True"
+
+Для SVD требуется указать ещё 3 числовых параметра: 
+
+8) восьмой параметр - шаг (по умолчанию 1);
+9) девятый параметр - от скольки (по умолчанию 0);
+10) десятый параметр - до скольки (по умолчанию 1);
+> ./DODTM_Algorithms "SVD" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100" "10" "50" "100"
