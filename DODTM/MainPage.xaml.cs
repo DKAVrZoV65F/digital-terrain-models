@@ -180,7 +180,7 @@ public partial class MainPage : ContentPage
         }
         else if (algorithmSelect.Equals("DFT"))
         {
-            arg2 = (arg1 == "True") ? arg1 : "";
+            arg2 = (arg1.Equals("True")) ? arg1 : "";
         }
 
 #if MACCATALYST
