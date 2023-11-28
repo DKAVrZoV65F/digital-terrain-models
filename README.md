@@ -34,16 +34,16 @@ Digital Terrain Models (Цифровые модели рельефа) - прог
 7) седьмой параметр - DPI изображения (по умолчанию 100);
 
 Пример использования:
-> ./DODTM_Algorithms "Butterworth Filter" "/Users/User/csgxhjnsqh7j.jpg" "/Users/kamchatka" "png" "800" "800" "100"
+> ./DODTM_Algorithms "Butterworth Filter" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100"
 
 Для DFT требуется указать булевский параметр:
 
 8) восьмой параметр - True или False (по умолчанию False);
-> ./DODTM_Algorithms "DFT" "/Users/User/csgxhjnsqh7j.jpg" "/Users/kamchatka" "png" "800" "800" "100" "True"
+> ./DODTM_Algorithms "DFT" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100" "True"
 
 Для SVD требуется указать ещё 3 числовых параметра: 
 
 8) восьмой параметр - шаг (по умолчанию 1);
 9) девятый параметр - от скольки (по умолчанию 0);
 10) десятый параметр - до скольки (по умолчанию 1);
-> ./DODTM_Algorithms "SVD" "/Users/User/csgxhjnsqh7j.jpg" "/Users/kamchatka" "png" "800" "800" "100" "10" "50" "100"
+> ./DODTM_Algorithms "SVD" "/Users/User/csgxhjnsqh7j.jpg" "/Users/User" "png" "800" "800" "100" "10" "50" "100"
