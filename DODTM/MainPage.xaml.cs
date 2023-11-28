@@ -183,6 +183,13 @@ public partial class MainPage : ContentPage
             arg2 = (arg1.Equals("True")) ? arg1 : "";
         }
 
+        bool oldOutput = false;
+        if (outputFile.Equals("bmp"))
+        {
+            outputFile = "jpeg";
+            oldOutput = true;
+        }
+
 #if MACCATALYST
         string command = $"./DODTM_Algorithms \"{algorithmSelect}\" \"{pathImage}\" \"{folderPath}\" \"{outputFile}\" \"{widthImg}\" \"{heightImg}\" \"{dpiImg}\" \"{arg2}\" \"{startRange}\" \"{endRange}\"";
         await Clipboard.SetTextAsync(command);
@@ -212,6 +219,27 @@ public partial class MainPage : ContentPage
         };
         _ = proc.Start();
         _ = proc.StandardOutput.ReadToEnd();
+
+        if (oldOutput)
+        {
+            foreach (string file in Directory.EnumerateFiles(folderPath, $"*.{outputFile}", SearchOption.AllDirectories))
+            {
+                Bitmap bitmap;
+                using (Stream bmpStream = System.IO.File.Open(file, System.IO.FileMode.Open))
+                {
+                    System.Drawing.Image image = System.Drawing.Image.FromStream(bmpStream);
+
+                    bitmap = new Bitmap(image);
+
+                }
+                if (System.IO.File.Exists(file))
+                {
+                    System.IO.File.Delete(file);
+                }
+                bitmap.Save(file.Remove(file.Length - outputFile.Length) + "bmp", System.Drawing.Imaging.ImageFormat.Bmp);
+            }
+        }
+        oldOutput = false;
 #endif
     }
 
